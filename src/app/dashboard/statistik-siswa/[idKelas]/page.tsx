@@ -42,7 +42,7 @@ export default function HasilPresensiPage() {
             className="btn btn-primary my-2"
             onClick={() => setIsPresence(!isPresence)}
           >
-            Nilai rata-rata siswa
+            {isPresence ? "Nilai rata-rata siswa" : "Hasil Presensi"}
           </button>
 
           <table className="table">

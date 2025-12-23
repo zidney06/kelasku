@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
-      msg: "Oke dulu",
+      msg: "Berhasil membuat kelas",
       data: {
         newClass,
       },

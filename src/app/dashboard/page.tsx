@@ -65,7 +65,6 @@ export default function DashboardPage() {
   const handleDelete = () => {
     if (inputedClassName === requiredClassName) {
       axios.delete(`/api/kelas/${classId}`).then((res) => {
-        console.log(res.data);
         setClassList(
           classList.filter((item) => item._id !== res.data.data.deletedClassId),
         );
