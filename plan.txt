@@ -1,0 +1,37 @@
+Aplikasi pebantu guru
+
+#diperuntukan kepada para guru
+
+fitur utama:
+- presensi siswa
+- input nilai tugas harian siswa
+- melihat dan membuat data presensi dan nilai tugas harian dari masing-masing siswa
+
+terdapat dua tier, yaitu free dan subscribtion
+
+palikasi dibuat menggunakan next js
+
+Alur Aplikasi
+halaman utama:
+- menampilkan penjelasan mengenai aplikasi, contoh produk, dan macam-macam tier
+
+halaman login/register
+- menggunakan google
+
+halaman dashboard:
+- menampilkan daftar data kelas yang ada free tier max 5 data, sub max 10 data
+- informasi akun ( seperti: nama, guru apa, sekolah mana)
+- masukan ke developer
+- hapus akun
+
+di setiap data dalam dashboard jika diklik akan masuk ke halaman detail data yang masing-masingnya memiliki fitur:
+- menambah, manghapus data siswa
+- mengabsen siswa
+- memasukan nilai harian
+- menamai data misal jadi data kelas 1A
+- kelas
+
+setiap data siswa memiliki property:
+- nama
+- riwayat presensi
+- riwayat nilai tugas harian
