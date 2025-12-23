@@ -54,11 +54,6 @@ export async function POST(
       ),
     });
 
-    console.log(currentClass);
-
-    // amnil id siswa
-    const studentIds = results.map((result: IAsesmentResult) => result._id);
-
     // simpan id asesmen ke class
     currentClass.asesments.push(newAsesment._id);
 
@@ -78,8 +73,6 @@ export async function POST(
       newAsesment.save(),
       currentClass.save(),
     ]);
-
-    console.log(asesmentResults, newAsesment, studentIds);
 
     return NextResponse.json(
       { msg: "Berhasil membuat asesmen baru" },

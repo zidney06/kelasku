@@ -27,16 +27,17 @@ export default function AkunPage() {
 
   const { data: session } = useSession();
 
-  const tmp = session!.user as IUserAuth;
-
   useEffect(() => {
-    axios.get(`/api/auth/user-info/${tmp.id}`).then((res) => {
-      console.log(res.data);
-      setUser(res.data.data.user);
-    });
+    if (session?.user) {
+      const tmp = session.user as IUserAuth;
+
+      axios.get(`/api/auth/user-info/${tmp.id}`).then((res) => {
+        setUser(res.data.data.user);
+      });
+    }
   }, [session]);
 
-  console.log(user);
+  if (!session) return <p>Silahkan login terlebih dahulu.</p>;
 
   return (
     <div className="container-fluid p-2">

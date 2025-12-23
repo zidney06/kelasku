@@ -31,7 +31,6 @@ const handler = NextAuth({
               email: user.email,
               image: user.image,
             });
-            console.log("User baru berhasil didaftarkan via Google");
           }
 
           return true;

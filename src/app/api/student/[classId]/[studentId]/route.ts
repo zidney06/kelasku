@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import connectDB from "@/lib/connectDb";
 import Student from "@/models/student";
 import Class from "@/models/class";

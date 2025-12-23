@@ -25,7 +25,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     axios.get("/api/kelas").then((res) => {
-      console.log(res.data);
       setUsername(res.data.data.username);
       setClassList(res.data.data.classes);
     });

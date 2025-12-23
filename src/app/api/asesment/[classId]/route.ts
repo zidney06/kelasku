@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDb";
 import Class from "@/models/class";
-import AsesmentResult from "@/models/asesmentResult";
 import Asesmen from "@/models/asesmen";
-import Student from "@/models/student";
 
 export async function GET(
   request: NextRequest,
@@ -23,8 +21,6 @@ export async function GET(
     const asesmentsId = currentClass.asesments;
 
     const asesments = await Asesmen.find({ _id: { $in: asesmentsId } });
-
-    console.log(currentClass, asesments);
 
     return NextResponse.json(
       { msg: "Berhasil mengambil data asesmen", data: { asesments } },

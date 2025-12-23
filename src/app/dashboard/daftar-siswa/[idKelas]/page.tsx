@@ -27,7 +27,6 @@ export default function AkunPage() {
   useEffect(() => {
     axios.get("/api/student/" + params.idKelas).then((res) => {
       setStudents(res.data.data.students);
-      console.log(res.data);
     });
   }, [params]);
 
@@ -35,7 +34,6 @@ export default function AkunPage() {
     axios
       .post("/api/student/" + params.idKelas, { name: studentName })
       .then((res) => {
-        console.log(res.data);
         setStudents([...students, res.data.data.newStudent]);
       });
 
@@ -56,7 +54,6 @@ export default function AkunPage() {
         name: studentName,
       })
       .then((res) => {
-        console.log(res.data);
         setStudents(
           students.map((student) =>
             student._id === studentId
@@ -80,7 +77,6 @@ export default function AkunPage() {
       axios
         .delete(`/api/student/${params.idKelas}/${studentId}`)
         .then((res) => {
-          console.log(res.data);
           setStudents(students.filter((student) => student._id !== studentId));
         });
     }

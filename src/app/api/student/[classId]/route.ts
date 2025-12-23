@@ -41,8 +41,6 @@ export async function GET(
     if (isPresence === "true") {
       const isAttendanced = kelas.attendanceHistory.includes(today);
 
-      console.log(isAttendanced, kelas.attendanceHistory, today);
-
       response = {
         students: kelas.students,
         isAttendanced,

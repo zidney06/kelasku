@@ -21,7 +21,6 @@ export default function InputNilaiPage() {
 
   useEffect(() => {
     axios.get(`/api/student/${params.idKelas}`).then((res) => {
-      console.log(res.data);
       setStudents(
         res.data.data.students.map((student: IStudent) => {
           return {
@@ -60,8 +59,6 @@ export default function InputNilaiPage() {
   };
 
   const handleKonfirmasi = () => {
-    // buat logik untuk input nilai
-
     if (!confirm("Yakin? Pastikan semua nilai sudah benar")) {
       return;
     }
@@ -95,8 +92,6 @@ export default function InputNilaiPage() {
         setAsesmenDescription("");
       });
   };
-
-  console.log(students);
 
   return (
     <div className="p-2">

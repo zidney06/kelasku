@@ -14,7 +14,7 @@ interface IStudent {
 export default function PresensiPage() {
   const params = useParams();
   const [students, setStudents] = useState<IStudent[]>([]);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date] = useState<Date>(new Date());
   const [isAttendanced, setIsAttendanced] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,12 +29,8 @@ export default function PresensiPage() {
         }),
       );
       setIsAttendanced(res.data.data.isAttendanced);
-
-      console.log(res.data);
     });
   }, [params]);
-
-  console.log(isAttendanced);
 
   const handleHadirSemua = () => {
     const updatedStudents = students.map((siswa) => ({
@@ -61,12 +57,9 @@ export default function PresensiPage() {
     axios
       .post(`/api/student/${params.idKelas}/presensi`, { students })
       .then((res) => {
-        console.log(res.data);
         setIsAttendanced(res.data.data.isAttendanced);
       });
   };
-
-  console.log(students);
 
   return (
     <div className="container-fluid p-0">

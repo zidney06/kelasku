@@ -20,12 +20,9 @@ export default function AsesmenPage() {
     axios
       .get(`/api/asesment/${params.idKelas}/${params.idAsesmen}`)
       .then((res) => {
-        console.log(res.data);
         setAsesmentResults(res.data.data.asesmentResults);
       });
   }, [params]);
-
-  console.log(asesmentResults);
 
   return (
     <div className="container-fluid p-2">

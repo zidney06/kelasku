@@ -79,11 +79,6 @@ export async function POST(
 
     await Promise.all([currentClass.save(), Student.bulkWrite(operations)]);
 
-    console.log(students, date, currentClass, "presensi");
-    console.dir(operations, { depth: null });
-
-    // buat logikanya
-
     return NextResponse.json({
       msg: "Presensi kelas " + classId + " berhasil disimpan!",
       data: {
@@ -91,6 +86,7 @@ export async function POST(
       },
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ msg: "Gagal simpan presensi" }, { status: 500 });
   }
 }

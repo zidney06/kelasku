@@ -20,17 +20,13 @@ export default function HasilPresensiPage() {
 
   useEffect(() => {
     axios.get(`/api/asesment/${params.idKelas}`).then((res) => {
-      console.log(res.data);
       setAsesments(res.data.data.asesments);
     });
   }, [params]);
 
-  console.log(asesments);
-
   const handleDelete = (id: string) => {
     if (confirm("Apakah Anda yakin ingin menghapus asesmen ini?")) {
       axios.delete(`/api/asesment/${params.idKelas}/${id}`).then((res) => {
-        console.log(res.data);
         setAsesments(
           asesments.filter(
             (asesment) => asesment._id !== res.data.data.deletedAsesmentId,

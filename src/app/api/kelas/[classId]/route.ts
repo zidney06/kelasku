@@ -5,13 +5,6 @@ import Student from "@/models/student";
 import Asesmen from "@/models/asesmen";
 import AsesmentResult from "@/models/asesmentResult";
 
-interface IAsesmen {
-  name: string;
-  date: Date;
-  description: string;
-  asesmentResults: string[];
-}
-
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ classId: string }> },

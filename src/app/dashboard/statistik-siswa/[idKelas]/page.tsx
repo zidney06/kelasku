@@ -24,12 +24,9 @@ export default function HasilPresensiPage() {
 
   useEffect(() => {
     axios.get(`/api/student/${params.idKelas}`).then((res) => {
-      console.log(res.data);
       setStudents(res.data.data.students);
     });
   }, [params]);
-
-  console.log(students);
 
   return (
     <div className="p-2">

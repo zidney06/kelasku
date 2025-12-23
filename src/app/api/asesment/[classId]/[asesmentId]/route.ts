@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDb";
-import Class from "@/models/class";
 import AsesmentResult from "@/models/asesmentResult";
 import Asesmen from "@/models/asesmen";
-import Student from "@/models/student";
 
 // untuk asesment Results
 
@@ -31,8 +29,6 @@ export async function GET(
       _id: { $in: asesment.asesmentResults },
     });
 
-    console.log(asesment, asesmentResults);
-
     return NextResponse.json(
       {
         msg: "Berhasil mendapatkan data hasil asesment",
@@ -58,7 +54,7 @@ export async function DELETE(
   { params }: { params: Promise<{ classId: string; asesmentId: string }> },
 ) {
   try {
-    const { classId, asesmentId } = await params;
+    const { asesmentId } = await params;
 
     await connectDB();
 
