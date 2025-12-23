@@ -60,15 +60,6 @@ export async function POST(request: NextRequest) {
 
     const classCount = await Class.countDocuments({ owner: user._id });
 
-    if (!classCount) {
-      return NextResponse.json(
-        { msg: "Class count not found" },
-        { status: 404 },
-      );
-    }
-
-    console.log(classCount);
-
     if (user.tier === "free" && classCount >= 5) {
       return NextResponse.json(
         {

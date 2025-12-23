@@ -24,12 +24,10 @@ if (!cached) {
 
 async function connectDB() {
   if (cached.conn) {
-    console.log("Koneksi sudah ada");
     return cached.conn;
   }
 
   if (!cached.promise) {
-    console.log("Membuat koneksi baru");
     const opts = {
       bufferCommands: false, // Matikan buffer agar error cepat terdeteksi
     };
