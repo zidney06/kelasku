@@ -68,7 +68,7 @@ export default function HasilPresensiPage() {
                   })}
                 </td>
                 <td>{asesment.description}</td>
-                <td className="d-flex justify-content-between">
+                <td className="d-md-flex justify-content-between">
                   <Link
                     href={`/dashboard/hasil-asesmen/${params.idKelas}/asesmen/${asesment._id}`}
                     className="btn btn-primary"
