@@ -53,7 +53,7 @@ export default function AkunPage() {
       .patch(`/api/student/${params.idKelas}/${studentId}`, {
         name: studentName,
       })
-      .then((res) => {
+      .then(() => {
         setStudents(
           students.map((student) =>
             student._id === studentId
@@ -74,11 +74,9 @@ export default function AkunPage() {
 
   const handleDelete = (studentId: string) => {
     if (confirm("Yakin ingin menghapus data siswa ini?")) {
-      axios
-        .delete(`/api/student/${params.idKelas}/${studentId}`)
-        .then((res) => {
-          setStudents(students.filter((student) => student._id !== studentId));
-        });
+      axios.delete(`/api/student/${params.idKelas}/${studentId}`).then(() => {
+        setStudents(students.filter((student) => student._id !== studentId));
+      });
     }
   };
 
