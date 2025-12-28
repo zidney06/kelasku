@@ -80,7 +80,7 @@ export async function POST(
 
     await connectDB();
 
-    if (!name)
+    if (!name.trim())
       return NextResponse.json({ msg: "Name is required" }, { status: 400 });
 
     const user = await User.findOne({ email: token.email }).lean();

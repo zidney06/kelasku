@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { type KeyboardEvent, type ChangeEvent } from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
 
 interface IStudent {
@@ -20,17 +21,33 @@ export default function InputNilaiPage() {
   const params = useParams();
 
   useEffect(() => {
-    axios.get(`/api/student/${params.idKelas}`).then((res) => {
-      setStudents(
-        res.data.data.students.map((student: IStudent) => {
-          return {
-            _id: student._id,
-            name: student.name,
-            score: 0,
-          };
-        }),
-      );
-    });
+    axios
+      .get(`/api/student/${params.idKelas}`)
+      .then((res) => {
+        setStudents(
+          res.data.data.students.map((student: IStudent) => {
+            return {
+              _id: student._id,
+              name: student.name,
+              score: 0,
+            };
+          }),
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil daftar data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, [params]);
 
   const blockInvalidChar = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -49,25 +66,36 @@ export default function InputNilaiPage() {
     newStudents[index].score = value;
 
     if (value < 0) {
-      alert("min 0");
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Minimal nilai adalah 0!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
       newStudents[index].score = 0;
     } else if (value > 100) {
-      alert("max 100");
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Nilai maksimal adalah 100!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
       newStudents[index].score = 100;
     }
     setStudents(newStudents);
   };
 
-  const handleKonfirmasi = () => {
-    if (!confirm("Yakin? Pastikan semua nilai sudah benar")) {
-      return;
-    }
-
-    if (!asesmenName.trim()) {
-      alert("Nama asesmen tidak boleh kosong!");
-      return;
-    }
-
+  const fetchInputNilai = () => {
     axios
       .post(`/api/student/${params.idKelas}/input-nilai`, {
         results: students,
@@ -90,7 +118,62 @@ export default function InputNilaiPage() {
         );
         setAsesmenName("");
         setAsesmenDescription("");
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal menginput nilai!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
+  };
+
+  const handleKonfirmasi = () => {
+    if (!asesmenName.trim()) {
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Nama asesmen tidak boleh kosong!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
+      return;
+    }
+
+    confirmAlert({
+      customUI: ({ onClose }) => (
+        <div className="border rounded p-3">
+          <h3>Info!</h3>
+          <p className="mb-0">Apakah anda sudah yakin?</p>
+          <p>Pastikan semua nilai telah diinputkan dengan benar</p>
+          <div className="d-flex justify-content-between">
+            <button className="btn btn-danger" onClick={onClose}>
+              batal
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                fetchInputNilai();
+                onClose();
+              }}
+            >
+              Konfirmasi
+            </button>
+          </div>
+        </div>
+      ),
+    });
   };
 
   return (
@@ -109,6 +192,7 @@ export default function InputNilaiPage() {
           className="form-control"
           style={{ width: 250 }}
           value={asesmenName}
+          autoComplete="off"
           onChange={(e) => setAsesmenName(e.target.value)}
         />
         <label htmlFor="deskripsiTugas" className="form-label">

@@ -12,7 +12,7 @@ const AsesmenSchema = new Schema<Asesmen>({
   date: { type: Date, required: true },
   description: {
     type: String,
-    default: "Tugas untuk meningkatkan keterampilan dan kesiswa",
+    default: "Tugas untuk meningkatkan keterampilan dan kemampuan siswa",
     maxlength: [150, "Deskripsi terlalu panjang"],
     trim: true,
     set: (val: string) => (val.trim() === "" ? undefined : val),

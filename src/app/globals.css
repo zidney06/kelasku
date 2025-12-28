@@ -1,3 +1,41 @@
 .red {
     border: 1px solid red;
 }
+
+/*.custom-ui {
+    background-color: black;
+}
+
+.custom-ui h1 {
+    color: white;
+    font-size: 2rem;
+}
+
+.custom-ui p {
+    color: white;
+}
+
+.custom-ui button {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}*/
+
+.pop-up-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1062;
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+.pop-up-box {
+    background-color: white;
+    z-index: 1061;
+    border-radius: 10px;
+    padding: 1rem;
+}

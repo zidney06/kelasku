@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
 
 interface IStudent {
@@ -25,16 +26,60 @@ export default function AkunPage() {
   const [studentId, setStudentId] = useState("");
 
   useEffect(() => {
-    axios.get("/api/student/" + params.idKelas).then((res) => {
-      setStudents(res.data.data.students);
-    });
+    axios
+      .get("/api/student/" + params.idKelas)
+      .then((res) => {
+        setStudents(res.data.data.students);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, [params]);
 
   const handleAddStudent = () => {
+    if (!studentName.trim()) {
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Nama siswa tidak boleh kosong!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
+      return;
+    }
     axios
       .post("/api/student/" + params.idKelas, { name: studentName })
       .then((res) => {
         setStudents([...students, res.data.data.newStudent]);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal menambahkan siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
 
     setStudentName("");
@@ -61,6 +106,20 @@ export default function AkunPage() {
               : student,
           ),
         );
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengedit data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
 
     setStudentName("");
@@ -72,12 +131,51 @@ export default function AkunPage() {
     setIsEditing(true);
   };
 
-  const handleDelete = (studentId: string) => {
-    if (confirm("Yakin ingin menghapus data siswa ini?")) {
-      axios.delete(`/api/student/${params.idKelas}/${studentId}`).then(() => {
+  const deleteSiswa = (studentId: string) => {
+    axios
+      .delete(`/api/student/${params.idKelas}/${studentId}`)
+      .then(() => {
         setStudents(students.filter((student) => student._id !== studentId));
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal menghapus data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
-    }
+  };
+
+  const handleDelete = (studentId: string) => {
+    confirmAlert({
+      customUI: ({ onClose }) => (
+        <div className="border rounded p-3" style={{ width: "300px" }}>
+          <h3>Info!</h3>
+          <p className="mb-0">Apakah anda yakin?</p>
+          <div className="d-flex justify-content-between mt-3">
+            <button className="btn btn-danger" onClick={onClose}>
+              batal
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                deleteSiswa(studentId);
+                onClose();
+              }}
+            >
+              Konfirmasi
+            </button>
+          </div>
+        </div>
+      ),
+    });
   };
 
   return (
@@ -143,6 +241,7 @@ export default function AkunPage() {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  data-bs-dismiss="modal"
                   onClick={handleConfirm}
                 >
                   Konfirmasi
@@ -182,7 +281,7 @@ export default function AkunPage() {
               </li>
             ))
           ) : (
-            <li className="list-group-item">Tidak ada siswa</li>
+            <li className="list-group-item text-center">Tidak ada siswa</li>
           )}
         </ul>
       </main>

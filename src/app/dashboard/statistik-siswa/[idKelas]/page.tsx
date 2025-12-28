@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
 
 interface IStudent {
   _id: string;
@@ -23,9 +24,25 @@ export default function HasilPresensiPage() {
   const params = useParams();
 
   useEffect(() => {
-    axios.get(`/api/student/${params.idKelas}`).then((res) => {
-      setStudents(res.data.data.students);
-    });
+    axios
+      .get(`/api/student/${params.idKelas}`)
+      .then((res) => {
+        setStudents(res.data.data.students);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, [params]);
 
   return (
@@ -42,7 +59,7 @@ export default function HasilPresensiPage() {
             className="btn btn-primary my-2"
             onClick={() => setIsPresence(!isPresence)}
           >
-            {isPresence ? "Nilai rata-rata siswa" : "Hasil Presensi"}
+            Nilai rata-rata siswa
           </button>
 
           <table className="table">
@@ -74,13 +91,13 @@ export default function HasilPresensiPage() {
         </div>
       ) : (
         <div>
-          <h3>Hasil rata-rata nilai siswa</h3>
+          <h3>Nilai rata-rata siswa</h3>
 
           <button
             className="btn btn-primary my-2"
             onClick={() => setIsPresence(!isPresence)}
           >
-            Nilai rata-rata siswa
+            Presensi
           </button>
 
           <table className="table">
@@ -96,7 +113,7 @@ export default function HasilPresensiPage() {
                 <tr key={index}>
                   <th scope="row">{index + 1}</th>
                   <td>{student.name}</td>
-                  <td>{student.average}</td>
+                  <td>{student.average.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>

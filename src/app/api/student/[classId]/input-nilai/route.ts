@@ -37,6 +37,7 @@ export async function POST(
     // buat data hasil asesmen untuk ditampilkan di tiap asesmen
     const asesmentResults = results.map((result: IAsesmentResult) => {
       return new AsesmentResult({
+        studentId: result._id,
         studentName: result.name,
         score: result.score,
       });

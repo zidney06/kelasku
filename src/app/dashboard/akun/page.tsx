@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
 
 interface IUserAuth {
@@ -31,9 +32,25 @@ export default function AkunPage() {
     if (session?.user) {
       const tmp = session.user as IUserAuth;
 
-      axios.get(`/api/auth/user-info/${tmp.id}`).then((res) => {
-        setUser(res.data.data.user);
-      });
+      axios
+        .get(`/api/auth/user-info/${tmp.id}`)
+        .then((res) => {
+          setUser(res.data.data.user);
+        })
+        .catch((error) => {
+          console.error(error);
+          confirmAlert({
+            customUI: ({ onClose }) => (
+              <div className="border rounded p-3">
+                <h3>Error!</h3>
+                <p>Gagal mengambil data akun!</p>
+                <button className="btn btn-primary" onClick={onClose}>
+                  Oke
+                </button>
+              </div>
+            ),
+          });
+        });
     }
   }, [session]);
 

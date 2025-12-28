@@ -4,6 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { confirmAlert } from "react-confirm-alert";
 
 interface IAsesmentResult {
   _id: string;
@@ -21,6 +22,20 @@ export default function AsesmenPage() {
       .get(`/api/asesment/${params.idKelas}/${params.idAsesmen}`)
       .then((res) => {
         setAsesmentResults(res.data.data.asesmentResults);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil data hasil asesmen!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
   }, [params]);
 

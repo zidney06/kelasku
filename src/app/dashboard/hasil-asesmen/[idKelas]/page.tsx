@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
 
 interface Asesment {
@@ -19,26 +20,58 @@ export default function HasilPresensiPage() {
   const params = useParams();
 
   useEffect(() => {
-    axios.get(`/api/asesment/${params.idKelas}`).then((res) => {
-      setAsesments(res.data.data.asesments);
-    });
+    axios
+      .get(`/api/asesment/${params.idKelas}`)
+      .then((res) => {
+        setAsesments(res.data.data.asesments);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil data hasil asesmen!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, [params]);
 
   const handleDelete = (id: string) => {
     if (confirm("Apakah Anda yakin ingin menghapus asesmen ini?")) {
-      axios.delete(`/api/asesment/${params.idKelas}/${id}`).then((res) => {
-        setAsesments(
-          asesments.filter(
-            (asesment) => asesment._id !== res.data.data.deletedAsesmentId,
-          ),
-        );
-      });
+      axios
+        .delete(`/api/asesment/${params.idKelas}/${id}`)
+        .then((res) => {
+          setAsesments(
+            asesments.filter(
+              (asesment) => asesment._id !== res.data.data.deletedAsesmentId,
+            ),
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+          confirmAlert({
+            customUI: ({ onClose }) => (
+              <div className="border rounded p-3">
+                <h3>Error!</h3>
+                <p>Gagal menghapus data hasil asesmen!</p>
+                <button className="btn btn-primary" onClick={onClose}>
+                  Oke
+                </button>
+              </div>
+            ),
+          });
+        });
     }
   };
 
   return (
     <div className="container-fluid p-0">
-      <main className="p-2">
+      <main className="p-1">
         <Link href="/dashboard" className="btn btn-info text-light">
           <i className="bi bi-arrow-return-left"></i>
         </Link>
@@ -68,19 +101,21 @@ export default function HasilPresensiPage() {
                   })}
                 </td>
                 <td>{asesment.description}</td>
-                <td className="d-md-flex justify-content-between">
-                  <Link
-                    href={`/dashboard/hasil-asesmen/${params.idKelas}/asesmen/${asesment._id}`}
-                    className="btn btn-primary"
-                  >
-                    Lihat
-                  </Link>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(asesment._id)}
-                  >
-                    Hapus
-                  </button>
+                <td className="p-0">
+                  <div className="d-md-flex justify-content-around mx-auto">
+                    <Link
+                      href={`/dashboard/hasil-asesmen/${params.idKelas}/asesmen/${asesment._id}`}
+                      className="btn btn-primary"
+                    >
+                      <i className="bi bi-box-arrow-right"></i>
+                    </Link>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(asesment._id)}
+                    >
+                      <i className="bi bi-trash3"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

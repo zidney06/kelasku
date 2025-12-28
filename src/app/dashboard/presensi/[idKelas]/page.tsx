@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
 
 interface IStudent {
@@ -18,18 +19,34 @@ export default function PresensiPage() {
   const [isAttendanced, setIsAttendanced] = useState<boolean>(true);
 
   useEffect(() => {
-    axios.get(`/api/student/${params.idKelas}?isPresence=true`).then((res) => {
-      setStudents(
-        res.data.data.students.map((student: IStudent) => {
-          return {
-            _id: student._id,
-            name: student.name,
-            attendance: null,
-          };
-        }),
-      );
-      setIsAttendanced(res.data.data.isAttendanced);
-    });
+    axios
+      .get(`/api/student/${params.idKelas}?isPresence=true`)
+      .then((res) => {
+        setStudents(
+          res.data.data.students.map((student: IStudent) => {
+            return {
+              _id: student._id,
+              name: student.name,
+              attendance: null,
+            };
+          }),
+        );
+        setIsAttendanced(res.data.data.isAttendanced);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengambil data siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, [params]);
 
   const handleHadirSemua = () => {
@@ -50,7 +67,17 @@ export default function PresensiPage() {
   const handleKonfirmasi = () => {
     const belumAbsen = students.some((s) => s.attendance === null);
     if (belumAbsen) {
-      alert("Ada siswa yang belum dipilih status kehadirannya!");
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Ada siswa yang belum dipilih status kehadirannya!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
       return;
     }
 
@@ -58,6 +85,20 @@ export default function PresensiPage() {
       .post(`/api/student/${params.idKelas}/presensi`, { students })
       .then((res) => {
         setIsAttendanced(res.data.data.isAttendanced);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal mengabsen siswa!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
   };
 
@@ -77,14 +118,14 @@ export default function PresensiPage() {
             })}
         </p>
         {!isAttendanced ? (
-          <div>
+          <div className="mx-auto" style={{ maxWidth: 800 }}>
             <button
               className="btn btn-primary text-light my-2"
               onClick={handleHadirSemua}
             >
               Hadir semua
             </button>
-            <ul className="list-group mx-auto" style={{ maxWidth: 700 }}>
+            <ul className="list-group mx-auto">
               {students.map((siswa, i) => (
                 <li
                   className="list-group-item d-md-flex justify-content-between align-items-center"
@@ -144,7 +185,12 @@ export default function PresensiPage() {
             </button>
           </div>
         ) : (
-          <p className="border text-center p-2">Hari ini sudah diabsen!</p>
+          <p
+            className="border text-center p-2 mx-auto"
+            style={{ maxWidth: 800 }}
+          >
+            Hari ini sudah diabsen!
+          </p>
         )}
       </main>
     </div>

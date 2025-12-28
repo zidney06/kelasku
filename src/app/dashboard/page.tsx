@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { confirmAlert } from "react-confirm-alert";
 
 interface IClass {
   _id: string;
@@ -24,10 +25,26 @@ export default function DashboardPage() {
   const [inputedClassName, setInputedClassName] = useState("");
 
   useEffect(() => {
-    axios.get("/api/kelas").then((res) => {
-      setUsername(res.data.data.username);
-      setClassList(res.data.data.classes);
-    });
+    axios
+      .get("/api/kelas")
+      .then((res) => {
+        setUsername(res.data.data.username);
+        setClassList(res.data.data.classes);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3" style={{ minWidth: 300 }}>
+              <h3>Error!</h3>
+              <p>Gagal mengambil data kelas!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+      });
   }, []);
 
   const handleDeleteClick = (classId: string, className: string) => {
@@ -43,7 +60,17 @@ export default function DashboardPage() {
 
   const handleConfirm = () => {
     if (!className || !subjectName || !semester) {
-      alert("Please fill all fields");
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3" style={{ minWidth: 300 }}>
+            <h3>Error!</h3>
+            <p>Isi semua field!!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
+      });
       return;
     }
 
@@ -55,6 +82,20 @@ export default function DashboardPage() {
       })
       .then((res) => {
         setClassList([...classList, res.data.data.newClass]);
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal membuat kelas!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
       });
 
     setClassName("");
@@ -64,10 +105,40 @@ export default function DashboardPage() {
 
   const handleDelete = () => {
     if (inputedClassName === requiredClassName) {
-      axios.delete(`/api/kelas/${classId}`).then((res) => {
-        setClassList(
-          classList.filter((item) => item._id !== res.data.data.deletedClassId),
-        );
+      axios
+        .delete(`/api/kelas/${classId}`)
+        .then((res) => {
+          setClassList(
+            classList.filter(
+              (item) => item._id !== res.data.data.deletedClassId,
+            ),
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+          confirmAlert({
+            customUI: ({ onClose }) => (
+              <div className="border rounded p-3">
+                <h3>Error!</h3>
+                <p>Gagal menghapus kelas!</p>
+                <button className="btn btn-primary" onClick={onClose}>
+                  Oke
+                </button>
+              </div>
+            ),
+          });
+        });
+    } else {
+      confirmAlert({
+        customUI: ({ onClose }) => (
+          <div className="border rounded p-3">
+            <h3>Error!</h3>
+            <p>Input tidak sesuai!!</p>
+            <button className="btn btn-primary" onClick={onClose}>
+              Oke
+            </button>
+          </div>
+        ),
       });
     }
     resetDeleteModal();
@@ -154,6 +225,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  data-bs-dismiss="modal"
                   onClick={handleConfirm}
                 >
                   Konfirmasi
@@ -218,86 +290,100 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <h2>Daftar kelas</h2>
+        <h2 className="mb-4">Daftar kelas</h2>
 
-        <div className="d-md-flex justify-content-around flex-wrap p-2">
-          {classList.map((item: IClass, i) => (
-            <div
-              className="card mx-auto my-2 mx-md-2 w-100 w-md-45"
-              style={{ maxWidth: 500, minWidth: 250 }}
-              key={i}
-            >
-              <div className="card-body">
-                <h5 className="card-title">{item.className}</h5>
+        <div className="row cols-md-2 p-2 g-2">
+          {classList.length > 0 ? (
+            classList.map((item: IClass, i) => (
+              <div
+                className="card my-2 mx-sm-2"
+                style={{ maxWidth: 500, minWidth: 300 }}
+                key={i}
+              >
+                <div className="card-body">
+                  <h5 className="card-title">{item.className}</h5>
 
-                <p>Jumlah siswa: {item.students.length}</p>
-                <p>Mata pelajaran: {item.subjectName}</p>
-                <p>Semester: {item.semester}</p>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="dropdown">
+                  <p>Jumlah siswa: {item.students.length}</p>
+                  <p>Mata pelajaran: {item.subjectName}</p>
+                  <p>Semester: {item.semester}</p>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="dropdown">
+                      <button
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Aksi
+                      </button>
+                      <ul className="dropdown-menu">
+                        <li>
+                          <Link
+                            href={"/dashboard/daftar-siswa/" + item._id}
+                            className="dropdown-item"
+                          >
+                            Daftar Siswa
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href={"/dashboard/presensi/" + item._id}
+                            className="dropdown-item"
+                          >
+                            presensi
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href={"/dashboard/asesmen/" + item._id}
+                            className="dropdown-item"
+                          >
+                            Asesmen
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href={"/dashboard/statistik-siswa/" + item._id}
+                            className="dropdown-item"
+                          >
+                            Statistik Siswa
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            href={"/dashboard/hasil-asesmen/" + item._id}
+                            className="dropdown-item"
+                          >
+                            Hasil Asesmen
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
                     <button
-                      className="btn btn-secondary dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
+                      className="btn btn-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#confirmDelete"
+                      onClick={() =>
+                        handleDeleteClick(item._id, item.className)
+                      }
                     >
-                      Aksi
+                      <i className="bi bi-trash3"></i>
                     </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <Link
-                          href={"/dashboard/daftar-siswa/" + item._id}
-                          className="dropdown-item"
-                        >
-                          Daftar Siswa
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={"/dashboard/presensi/" + item._id}
-                          className="dropdown-item"
-                        >
-                          presensi
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={"/dashboard/asesmen/" + item._id}
-                          className="dropdown-item"
-                        >
-                          Asesmen
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={"/dashboard/statistik-siswa/" + item._id}
-                          className="dropdown-item"
-                        >
-                          Statistik Siswa
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={"/dashboard/hasil-asesmen/" + item._id}
-                          className="dropdown-item"
-                        >
-                          Hasil Asesmen
-                        </Link>
-                      </li>
-                    </ul>
                   </div>
-                  <button
-                    className="btn btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#confirmDelete"
-                    onClick={() => handleDeleteClick(item._id, item.className)}
-                  >
-                    <i className="bi bi-trash3"></i>
-                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="mx-auto">
+              <div className="card my-2 mx-sm-2">
+                <div className="card-body">
+                  <h5 className="card-title m-0 text-center">
+                    Belum ada kelas
+                  </h5>
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </main>
     </div>
