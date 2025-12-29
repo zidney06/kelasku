@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <div>
       <div
-        className="d-flex align-items-center gap-2 bg-primary py-2 px-4"
+        className="d-flex align-items-center gap-2 bg-primary py-2 px-2 px-md-4"
         style={{ fontSize: ".9rem" }}
       >
         <Link

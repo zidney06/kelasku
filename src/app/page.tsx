@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="container-fluid p-0">
       <div
-        className="d-flex bg-primary py-2 px-4 justify-content-between"
+        className="d-flex bg-primary py-2 px-2 px-md-4 justify-content-between"
         data-bs-theme="dark"
         style={{ fontSize: ".9rem" }}
       >
@@ -54,9 +54,9 @@ export default function Home() {
       <main className="p-2">
         <div
           className="d-lg-flex justify-content-around"
-          style={{ height: 400 }}
+          // style={{ height: 400 }}
         >
-          <div className="col-lg-6 text-center d-flex align-items-center">
+          <div className="col-lg-5 text-center d-flex align-items-center">
             <div>
               <h1 className="text-primary">Manajemen kelas</h1>
               <p>
@@ -66,8 +66,17 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="col-lg-6 text-center">
-            <h3 className="text-primary">Contoh aplikasinya</h3>
+          <div className="col-lg-7 text-center">
+            <h3 className="text-primary">Contoh aplikasi</h3>
+            <div className="d-md-flex justify-content-center align-items-center gap-3">
+              <Image
+                src="/images/mobile-dashboard.webp"
+                alt="Contoh aplikasi"
+                width={200}
+                height={400}
+                className="border-dark rounded rounded-3 my-2 red"
+              />
+            </div>
           </div>
         </div>
         <section>
@@ -193,16 +202,21 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section
-          className="container bg-primary text-light p-3 rounded rounded-5 my-3 d-lg-flex"
-          style={{ height: 400 }}
-        >
+        <section className="container bg-primary text-light p-5 rounded rounded-5 my-3 d-lg-flex">
           <div className="col-lg-6 d-flex align-items-center">
-            <div>
+            <div className="">
               <h2>Ayo, Coba Sekarang!</h2>
             </div>
           </div>
-          <div className="col-lg-6">ini gambar</div>
+          <div className="col-lg-6 d-flex justify-content-center">
+            <Image
+              src="/images/mobile-studentList.webp"
+              alt="Contoh aplikasi"
+              width={200}
+              height={400}
+              className="border-dark rounded rounded-3 my-2"
+            />
+          </div>
         </section>
       </main>
 
