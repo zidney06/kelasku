@@ -116,6 +116,19 @@ export default function InputNilaiPage() {
             };
           }),
         );
+
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Berhasil Input Nilai!</h3>
+              <p>Berhasil menginput nilai!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
+        });
+
         setAsesmenName("");
         setAsesmenDescription("");
       })

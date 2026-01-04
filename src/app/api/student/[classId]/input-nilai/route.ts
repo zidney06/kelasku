@@ -37,8 +37,7 @@ export async function POST(
     // buat data hasil asesmen untuk ditampilkan di tiap asesmen
     const asesmentResults = results.map((result: IAsesmentResult) => {
       return new AsesmentResult({
-        studentId: result._id,
-        studentName: result.name,
+        studentData: result._id,
         score: result.score,
       });
     });
@@ -76,7 +75,7 @@ export async function POST(
     ]);
 
     return NextResponse.json(
-      { msg: "Berhasil membuat asesmen baru" },
+      { msg: "Berhasil membuat asesmen baru", data: newAsesment._id },
       { status: 200 },
     );
   } catch (error) {

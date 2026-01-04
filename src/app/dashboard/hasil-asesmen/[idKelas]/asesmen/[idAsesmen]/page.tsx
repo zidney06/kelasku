@@ -6,9 +6,14 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { confirmAlert } from "react-confirm-alert";
 
+interface ISubAsesmentResult {
+  _id: string;
+  name: string;
+}
+
 interface IAsesmentResult {
   _id: string;
-  studentName: string;
+  studentData: ISubAsesmentResult;
   score: number;
 }
 
@@ -60,7 +65,7 @@ export default function AsesmenPage() {
           {asesmentResults.map((result, index) => (
             <tr key={result._id}>
               <th scope="row">{index + 1}</th>
-              <td>{result.studentName}</td>
+              <td>{result.studentData.name}</td>
               <td>{result.score}</td>
             </tr>
           ))}

@@ -13,14 +13,14 @@ export async function GET(
     const { classId } = await params;
     const isPresence = request.nextUrl.searchParams.get("isPresence");
 
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    // const token = await getToken({
+    //   req: request,
+    //   secret: process.env.NEXTAUTH_SECRET,
+    // });
 
-    if (!token) {
-      return NextResponse.json({ msg: "Unauthorized" }, { status: 401 });
-    }
+    // if (!token) {
+    //   return NextResponse.json({ msg: "Unauthorized" }, { status: 401 });
+    // }
 
     await connectDB();
 

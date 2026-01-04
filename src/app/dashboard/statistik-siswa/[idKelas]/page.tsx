@@ -47,7 +47,7 @@ export default function HasilPresensiPage() {
 
   return (
     <div className="p-2">
-      <Link href="/dashboard" className="btn btn-info text-light">
+      <Link href="/dashboard" className="btn btn-info text-light mb-2">
         <i className="bi bi-arrow-return-left"></i>
       </Link>
 

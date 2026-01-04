@@ -1,21 +1,16 @@
 import mongoose, { Mongoose } from "mongoose";
-
-const MONGODB_URI = process.env.MONGO_URI!;
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { seedTestData } from "./seed";
 
 declare global {
-  // Menggunakan 'var' adalah standar untuk deklarasi global di TS
-  // Kita definisikan struktur objeknya dengan jelas
   var mongoose: {
     conn: Mongoose | null;
     promise: Promise<Mongoose> | null;
+    mongod?: MongoMemoryServer;
   };
 }
 
-if (!MONGODB_URI) {
-  throw new Error("Tolong definisikan MONGO_URI di file .env.local");
-}
-
-// Menyiapkan cache global agar koneksi tidak dibuat ulang terus-menerus
+// Menyiapkan cache global agar koneksi tidak dibuat ulang terus menerus
 let cached = global.mongoose;
 
 if (!cached) {
@@ -32,9 +27,31 @@ async function connectDB() {
       bufferCommands: false, // Matikan buffer agar error cepat terdeteksi
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    let uri;
+
+    if (process.env.NODE_MYENV === "test") {
+      if (!cached.mongod) {
+        cached.mongod = await MongoMemoryServer.create();
+      }
+      uri = cached.mongod.getUri();
+      console.log("🛠️  Connected to MONGODB-MEMORY-SERVER (Mock DB)");
+    } else {
+      uri = process.env.MONGO_URI!;
+    }
+
+    if (!uri) {
+      throw new Error("Tolong definisikan MONGO_URI");
+    }
+
+    cached.promise = mongoose
+      .connect(uri, opts)
+      .then(async (mongooseInstance) => {
+        // JALANKAN SEED hanya jika di mode test
+        if (process.env.NODE_MYENV === "test") {
+          await seedTestData();
+        }
+        return mongooseInstance;
+      });
   }
 
   try {

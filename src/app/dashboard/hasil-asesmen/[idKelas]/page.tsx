@@ -41,32 +41,55 @@ export default function HasilPresensiPage() {
       });
   }, [params]);
 
-  const handleDelete = (id: string) => {
-    if (confirm("Apakah Anda yakin ingin menghapus asesmen ini?")) {
-      axios
-        .delete(`/api/asesment/${params.idKelas}/${id}`)
-        .then((res) => {
-          setAsesments(
-            asesments.filter(
-              (asesment) => asesment._id !== res.data.data.deletedAsesmentId,
-            ),
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-          confirmAlert({
-            customUI: ({ onClose }) => (
-              <div className="border rounded p-3">
-                <h3>Error!</h3>
-                <p>Gagal menghapus data hasil asesmen!</p>
-                <button className="btn btn-primary" onClick={onClose}>
-                  Oke
-                </button>
-              </div>
-            ),
-          });
+  const fetchDeleteAsesment = (id: string) => {
+    axios
+      .delete(`/api/asesment/${params.idKelas}/${id}`)
+      .then((res) => {
+        setAsesments(
+          asesments.filter(
+            (asesment) => asesment._id !== res.data.data.deletedAsesmentId,
+          ),
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        confirmAlert({
+          customUI: ({ onClose }) => (
+            <div className="border rounded p-3">
+              <h3>Error!</h3>
+              <p>Gagal menghapus data hasil asesmen!</p>
+              <button className="btn btn-primary" onClick={onClose}>
+                Oke
+              </button>
+            </div>
+          ),
         });
-    }
+      });
+  };
+
+  const handleDelete = (id: string) => {
+    confirmAlert({
+      customUI: ({ onClose }) => (
+        <div className="border rounded p-3 mx-3" style={{ width: "300px" }}>
+          <h3>Info!</h3>
+          <p>Apakah anda yakin mau menghapus data hasil asesmen?</p>
+          <div className="d-flex justify-content-between">
+            <button className="btn btn-danger" onClick={onClose}>
+              batal
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                fetchDeleteAsesment(id);
+                onClose();
+              }}
+            >
+              Konfirmasi
+            </button>
+          </div>
+        </div>
+      ),
+    });
   };
 
   return (
