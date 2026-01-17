@@ -4,13 +4,13 @@ import connectDB from "@/lib/connectDb";
 import User from "@/models/googleAuth";
 
 interface IUser {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   image: string;
 }
 
-const handler = NextAuth({
+export const nextOptions = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -41,12 +41,11 @@ const handler = NextAuth({
       }
       return true;
     },
-
     async session({ session }) {
       await connectDB();
       const user = await User.findOne({ email: session.user?.email });
       if (user && session.user) {
-        (session.user as IUser).id = user._id.toString();
+        (session.user as IUser)._id = user._id.toString();
       }
       return session;
     },
@@ -54,4 +53,5 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 });
 
+const handler = nextOptions;
 export { handler as GET, handler as POST };

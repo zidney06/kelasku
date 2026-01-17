@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import Popup from "@/components/Popup";
 
 export default function DashboardLayout({
   children,

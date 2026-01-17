@@ -1,96 +1,45 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { confirmAlert } from "react-confirm-alert";
 import axios from "axios";
+import Link from "next/link";
+import AsesmentComponent from "@/components/hasilAsesmentsComponent/AsesmentComponent";
+import { getAsesmentsList } from "@/actions/hasilAsesmentAct/actions";
+import z from "zod";
+import mongoose from "mongoose";
 
-interface Asesment {
-  _id: string;
-  name: string;
-  date: Date;
-  description: string;
-  asesmentResults: string[];
-}
+const asesmentSchema = z.object({
+  _id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id)),
+  name: z.string(),
+  date: z.date(),
+  description: z.string(),
+  asesmentResults: z.array(
+    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id))
+  ),
+});
 
-export default function HasilPresensiPage() {
-  const [asesments, setAsesments] = useState<Asesment[]>([]);
+const asesmentsSchema = z.array(asesmentSchema);
 
-  const params = useParams();
+export default async function HasilPresensiPage({
+  params,
+}: {
+  params: Promise<{ idKelas: string }>;
+}) {
+  let asesments: z.infer<typeof asesmentsSchema> = [];
+  const { idKelas } = await params;
+  let error: string = "";
 
-  useEffect(() => {
-    axios
-      .get(`/api/asesment/${params.idKelas}`)
-      .then((res) => {
-        setAsesments(res.data.data.asesments);
-      })
-      .catch((error) => {
-        console.error(error);
-        confirmAlert({
-          customUI: ({ onClose }) => (
-            <div className="border rounded p-3">
-              <h3>Error!</h3>
-              <p>Gagal mengambil data hasil asesmen!</p>
-              <button className="btn btn-primary" onClick={onClose}>
-                Oke
-              </button>
-            </div>
-          ),
-        });
-      });
-  }, [params]);
+  const res = await getAsesmentsList(idKelas);
 
-  const fetchDeleteAsesment = (id: string) => {
-    axios
-      .delete(`/api/asesment/${params.idKelas}/${id}`)
-      .then((res) => {
-        setAsesments(
-          asesments.filter(
-            (asesment) => asesment._id !== res.data.data.deletedAsesmentId,
-          ),
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-        confirmAlert({
-          customUI: ({ onClose }) => (
-            <div className="border rounded p-3">
-              <h3>Error!</h3>
-              <p>Gagal menghapus data hasil asesmen!</p>
-              <button className="btn btn-primary" onClick={onClose}>
-                Oke
-              </button>
-            </div>
-          ),
-        });
-      });
-  };
+  if (!res.success) {
+    error = res.msg;
+  } else {
+    const parsedData = asesmentsSchema.safeParse(res.data);
 
-  const handleDelete = (id: string) => {
-    confirmAlert({
-      customUI: ({ onClose }) => (
-        <div className="border rounded p-3 mx-3" style={{ width: "300px" }}>
-          <h3>Info!</h3>
-          <p>Apakah anda yakin mau menghapus data hasil asesmen?</p>
-          <div className="d-flex justify-content-between">
-            <button className="btn btn-danger" onClick={onClose}>
-              batal
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                fetchDeleteAsesment(id);
-                onClose();
-              }}
-            >
-              Konfirmasi
-            </button>
-          </div>
-        </div>
-      ),
-    });
-  };
+    if (!parsedData.success) {
+      console.error(parsedData.error);
+      error = "Gagal validasi zod";
+    } else {
+      asesments = parsedData.data;
+    }
+  }
 
   return (
     <div className="container-fluid p-0">
@@ -114,33 +63,13 @@ export default function HasilPresensiPage() {
             </tr>
           </thead>
           <tbody>
-            {asesments.map((asesment: Asesment, i) => (
-              <tr key={i}>
-                <th scope="row">{i + 1}</th>
-                <td>{asesment.name}</td>
-                <td>
-                  {new Date(asesment.date).toLocaleDateString("en-CA", {
-                    timeZone: "Asia/Jakarta",
-                  })}
-                </td>
-                <td>{asesment.description}</td>
-                <td className="p-0">
-                  <div className="d-md-flex justify-content-around mx-auto">
-                    <Link
-                      href={`/dashboard/hasil-asesmen/${params.idKelas}/asesmen/${asesment._id}`}
-                      className="btn btn-primary"
-                    >
-                      <i className="bi bi-box-arrow-right"></i>
-                    </Link>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(asesment._id)}
-                    >
-                      <i className="bi bi-trash3"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+            {asesments.map((asesment: z.infer<typeof asesmentSchema>, i) => (
+              <AsesmentComponent
+                asesment={asesment}
+                i={i}
+                key={asesment._id}
+                idKelas={idKelas}
+              />
             ))}
           </tbody>
         </table>

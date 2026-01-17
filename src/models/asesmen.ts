@@ -15,7 +15,10 @@ const AsesmenSchema = new Schema<Asesmen>({
     default: "Tugas untuk meningkatkan keterampilan dan kemampuan siswa",
     maxlength: [150, "Deskripsi terlalu panjang"],
     trim: true,
-    set: (val: string) => (val.trim() === "" ? undefined : val),
+    set: (val: string) =>
+      val.trim() === ""
+        ? "Tugas untuk meningkatkan keterampilan dan kemampuan siswa"
+        : val,
   },
   asesmentResults: [{ type: Schema.Types.ObjectId, ref: "AsesmentResult" }],
 });

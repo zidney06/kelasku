@@ -1,12 +1,12 @@
 import mongoose, { Mongoose } from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
+import { MongoMemoryReplSet } from "mongodb-memory-server";
 import { seedTestData } from "./seed";
 
 declare global {
   var mongoose: {
     conn: Mongoose | null;
     promise: Promise<Mongoose> | null;
-    mongod?: MongoMemoryServer;
+    mongod?: MongoMemoryReplSet;
   };
 }
 
@@ -31,7 +31,7 @@ async function connectDB() {
 
     if (process.env.NODE_MYENV === "test") {
       if (!cached.mongod) {
-        cached.mongod = await MongoMemoryServer.create();
+        cached.mongod = await MongoMemoryReplSet.create();
       }
       uri = cached.mongod.getUri();
       console.log("🛠️  Connected to MONGODB-MEMORY-SERVER (Mock DB)");

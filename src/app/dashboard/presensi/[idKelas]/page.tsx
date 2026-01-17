@@ -1,106 +1,44 @@
-"use client";
-
-import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { confirmAlert } from "react-confirm-alert";
-import axios from "axios";
+import mongoose from "mongoose";
+import PresenceComponent from "@/components/presensiComponents/PresenceComponent";
+import { getStudentsByClassId } from "@/actions/presenceAct/actions";
+import z from "zod";
 
-interface IStudent {
-  _id: string;
-  name: string;
-  attendance: number;
-}
+const stdSchema = z.object({
+  _id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id)),
+  name: z.string(),
+  attendanceStatus: z.number(),
+});
 
-export default function PresensiPage() {
-  const params = useParams();
-  const [students, setStudents] = useState<IStudent[]>([]);
-  const [date] = useState<Date>(new Date());
-  const [isAttendanced, setIsAttendanced] = useState<boolean>(true);
+const stdsSchema = z.array(stdSchema);
 
-  useEffect(() => {
-    axios
-      .get(`/api/student/${params.idKelas}?isPresence=true`)
-      .then((res) => {
-        setStudents(
-          res.data.data.students.map((student: IStudent) => {
-            return {
-              _id: student._id,
-              name: student.name,
-              attendance: null,
-            };
-          }),
-        );
-        setIsAttendanced(res.data.data.isAttendanced);
-      })
-      .catch((error) => {
-        console.error(error);
-        confirmAlert({
-          customUI: ({ onClose }) => (
-            <div className="border rounded p-3">
-              <h3>Error!</h3>
-              <p>Gagal mengambil data siswa!</p>
-              <button className="btn btn-primary" onClick={onClose}>
-                Oke
-              </button>
-            </div>
-          ),
-        });
-      });
-  }, [params]);
+export default async function PresensiPage({
+  params,
+}: {
+  params: Promise<{ idKelas: string }>;
+}) {
+  const { idKelas } = await params;
 
-  const handleHadirSemua = () => {
-    const updatedStudents = students.map((siswa) => ({
-      ...siswa,
-      attendance: 1,
-    }));
+  const date = new Date();
+  let isAttendanced = false;
+  let students: z.infer<typeof stdsSchema> = [];
+  let error: string | undefined = "";
 
-    setStudents(updatedStudents);
-  };
+  const res = await getStudentsByClassId(idKelas);
 
-  const updateStatus = (index: number, status: number) => {
-    const newStudents = [...students];
-    newStudents[index].attendance = status;
-    setStudents(newStudents);
-  };
+  if (!res.success) {
+    error = res.msg;
+  } else {
+    const parsedStds = stdsSchema.safeParse(res.data!.students);
 
-  const handleKonfirmasi = () => {
-    const belumAbsen = students.some((s) => s.attendance === null);
-    if (belumAbsen) {
-      confirmAlert({
-        customUI: ({ onClose }) => (
-          <div className="border rounded p-3">
-            <h3>Error!</h3>
-            <p>Ada siswa yang belum dipilih status kehadirannya!</p>
-            <button className="btn btn-primary" onClick={onClose}>
-              Oke
-            </button>
-          </div>
-        ),
-      });
-      return;
+    if (!parsedStds.success) {
+      console.error(parsedStds.error);
+      error = "Gagal validasi zod";
+    } else {
+      isAttendanced = res.data!.isAttendanced;
+      students = parsedStds.data;
     }
-
-    axios
-      .post(`/api/student/${params.idKelas}/presensi`, { students })
-      .then((res) => {
-        setIsAttendanced(res.data.data.isAttendanced);
-      })
-      .catch((error) => {
-        console.error(error);
-        confirmAlert({
-          customUI: ({ onClose }) => (
-            <div className="border rounded p-3">
-              <h3>Error!</h3>
-              <p>Gagal mengabsen siswa!</p>
-              <button className="btn btn-primary" onClick={onClose}>
-                Oke
-              </button>
-            </div>
-          ),
-        });
-      });
-  };
+  }
 
   return (
     <div className="container-fluid p-0">
@@ -109,6 +47,7 @@ export default function PresensiPage() {
           <i className="bi bi-arrow-return-left"></i>
         </Link>
         <h1>Presensi</h1>
+        {error && <i>{error}</i>}
         <p>
           Presensi tanggal
           {" " +
@@ -118,72 +57,7 @@ export default function PresensiPage() {
             })}
         </p>
         {!isAttendanced ? (
-          <div className="mx-auto" style={{ maxWidth: 800 }}>
-            <button
-              className="btn btn-primary text-light my-2"
-              onClick={handleHadirSemua}
-            >
-              Hadir semua
-            </button>
-            <ul className="list-group mx-auto">
-              {students.map((siswa, i) => (
-                <li
-                  className="list-group-item d-md-flex justify-content-between align-items-center"
-                  key={i}
-                >
-                  <p className="mb-0">{siswa.name}</p>
-                  <div className="d-flex gap-2">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={"presensi" + i}
-                        value="hadir"
-                        id={"hadir" + i}
-                        checked={siswa.attendance === 1}
-                        onChange={() => updateStatus(i, 1)}
-                      />
-                      <label className="form-check-label" htmlFor={"hadir" + i}>
-                        Hadir
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={"presensi" + i}
-                        value="izin"
-                        id={"izin" + i}
-                        onChange={() => updateStatus(i, 2)}
-                      />
-                      <label className="form-check-label" htmlFor={"izin" + i}>
-                        Izin
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={"presensi" + i}
-                        value="alpha"
-                        id={"alpha" + i}
-                        onChange={() => updateStatus(i, 3)}
-                      />
-                      <label className="form-check-label" htmlFor={"alpha" + i}>
-                        Alpha
-                      </label>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <button
-              className="btn btn-primary text-light my-2"
-              onClick={handleKonfirmasi}
-            >
-              Konfirmasi
-            </button>
-          </div>
+          <PresenceComponent stds={students} idKelas={idKelas} />
         ) : (
           <p
             className="border text-center p-2 mx-auto"

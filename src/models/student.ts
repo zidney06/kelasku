@@ -25,20 +25,8 @@ const StudentSchema = new Schema<IStudent>(
   {
     timestamps: true, // Otomatis buat field createdAt & updatedAt
     versionKey: false, // Menghilangkan field __v bawaan MongoDB
-  },
-);
-
-StudentSchema.pre("save", async function () {
-  // 'this' merujuk pada dokumen siswa yang sedang diproses
-  if (this.scores && this.scores.length > 0) {
-    // Menghitung total nilai
-    const totalSum = this.scores.reduce((acc, current) => acc + current, 0);
-    // Menghitung rata-rata dan menyimpannya ke field 'average'
-    this.average = totalSum / this.scores.length;
-  } else {
-    this.average = 0;
   }
-});
+);
 
 const Student = models.Student || model<IStudent>("Student", StudentSchema);
 

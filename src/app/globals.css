@@ -2,6 +2,30 @@
     border: 1px solid red;
 }
 
+.react-confirm-alert-overlay {
+  z-index: 9999 !important;
+}
+
+.pop-up-container {
+	background-color: rgba(0, 0, 0, 0.2);
+	width: 100vw;
+	height: 100vh;
+	z-index: 1;
+	bottom: 0;
+	position: fixed;
+}
+.pop-up-box {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 300px;
+	background-color: white;
+	z-index: 2;
+	border-radius: 10px;
+	padding: 1rem;
+}
+
 /*.custom-ui {
     background-color: black;
 }

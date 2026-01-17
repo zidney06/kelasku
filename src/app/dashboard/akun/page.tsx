@@ -1,60 +1,32 @@
-"use client";
-
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { confirmAlert } from "react-confirm-alert";
-import axios from "axios";
+import { getUserData } from "./actions";
+import z from "zod";
 
-interface IUserAuth {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-}
+const userSchema = z.object({
+  name: z.string(),
+  email: z.email(),
+  tier: z.string(),
+});
 
-interface IUser {
-  name: string;
-  email: string;
-  tier: string;
-}
+export default async function AkunPage({ params }: { params: { id: string } }) {
+  const res = await getUserData();
+  let error: string = "";
+  let user: z.infer<typeof userSchema> = { name: "", email: "", tier: "" };
 
-export default function AkunPage() {
-  const [user, setUser] = useState<IUser>({
-    name: "",
-    email: "",
-    tier: "",
-  });
+  const parsedData = userSchema.safeParse(res.data);
 
-  const { data: session } = useSession();
+  if (!res.success) {
+    error = "Gagal mengambil data user";
+  } else {
+    const parsedData = userSchema.safeParse(res.data);
 
-  useEffect(() => {
-    if (session?.user) {
-      const tmp = session.user as IUserAuth;
-
-      axios
-        .get(`/api/auth/user-info/${tmp.id}`)
-        .then((res) => {
-          setUser(res.data.data.user);
-        })
-        .catch((error) => {
-          console.error(error);
-          confirmAlert({
-            customUI: ({ onClose }) => (
-              <div className="border rounded p-3">
-                <h3>Error!</h3>
-                <p>Gagal mengambil data akun!</p>
-                <button className="btn btn-primary" onClick={onClose}>
-                  Oke
-                </button>
-              </div>
-            ),
-          });
-        });
+    if (!parsedData.success) {
+      console.error(parsedData.error);
+      error = "Gagal validasi zod";
+    } else {
+      user = parsedData.data;
     }
-  }, [session]);
-
-  if (!session) return <p>Silahkan login terlebih dahulu.</p>;
+  }
 
   return (
     <div className="container-fluid p-2">

@@ -6,6 +6,8 @@ import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import ContextProvide from "@/context/AppContext";
+import Popup from "@/components/Popup";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -27,7 +29,10 @@ export default function RootLayout({
       <body className={openSans.className}>
         <Provider>
           <AddBootstrap />
-          {children}
+          <ContextProvide>
+            {children}
+            <Popup />
+          </ContextProvide>
         </Provider>
       </body>
     </html>
