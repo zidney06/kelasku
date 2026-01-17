@@ -42,6 +42,7 @@ export default async function InputNilaiPage({
         <i className="bi bi-arrow-return-left"></i>
       </Link>
       <h1>Buat asesmen atau tugas</h1>
+      {error && <p>{error}</p>}
 
       {/* Sini */}
       <AsesmentComponent stds={students} idKelas={idKelas} />

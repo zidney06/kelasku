@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { z } from "zod";
 import DeleteComponent from "@/components/dashboardComponents/DeleteComponent";
-import { confirmAlert } from "react-confirm-alert";
 
 const classSchema = z.object({
   _id: z.preprocess((val) => String(val), z.string()),

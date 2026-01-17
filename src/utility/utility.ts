@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { nextOptions } from "@/app/api/auth/[...nextauth]/route";
+import { nextOptions } from "@/lib/nextAuth";
 import z from "zod";
 
 const userSchema = z.object({

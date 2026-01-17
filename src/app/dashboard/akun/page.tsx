@@ -8,7 +8,7 @@ const userSchema = z.object({
   tier: z.string(),
 });
 
-export default async function AkunPage({ params }: { params: { id: string } }) {
+export default async function AkunPage() {
   const res = await getUserData();
   let error: string = "";
   let user: z.infer<typeof userSchema> = { name: "", email: "", tier: "" };

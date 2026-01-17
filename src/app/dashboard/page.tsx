@@ -1,8 +1,6 @@
-"use server";
+export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { z } from "zod";
-import { confirmAlert } from "react-confirm-alert";
 import AddClassModal from "@/components/dashboardComponents/AddClassModal";
 import { getClassList } from "@/actions/dasboardAct/actions";
 import ClassCard from "@/components/dashboardComponents/ClassCard";

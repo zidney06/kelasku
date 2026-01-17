@@ -9,7 +9,7 @@ interface IStudent {
   name: string;
 }
 
-export default function ({
+export default function Container({
   students,
   idKelas,
 }: {

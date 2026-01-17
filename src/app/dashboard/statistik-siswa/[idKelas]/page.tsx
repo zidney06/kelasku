@@ -1,4 +1,3 @@
-import axios from "axios";
 import Link from "next/link";
 import { z } from "zod";
 import mongoose from "mongoose";

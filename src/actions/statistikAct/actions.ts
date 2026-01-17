@@ -2,12 +2,8 @@
 
 import connectDB from "@/lib/connectDb";
 import Class from "@/models/class";
-import AsesmentResult from "@/models/asesmentResult";
-import Asesmen from "@/models/asesmen";
-import Student from "@/models/student";
 import User from "@/models/googleAuth";
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
 import { getSession } from "@/utility/utility";
 

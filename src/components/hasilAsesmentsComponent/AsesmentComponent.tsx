@@ -2,8 +2,6 @@
 
 import { deleteAsesment } from "@/actions/hasilAsesmentAct/actions";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
 import { confirmAlert } from "react-confirm-alert";
 
 interface Asesment {

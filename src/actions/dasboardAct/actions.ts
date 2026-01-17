@@ -29,10 +29,6 @@ const userSchema = z.object({
   image: z.string(),
 });
 
-const sessionSchema = z.object({
-  user: userSchema,
-});
-
 export const getClassList = async () => {
   try {
     const session = await getSession();

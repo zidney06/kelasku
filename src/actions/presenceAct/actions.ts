@@ -9,11 +9,6 @@ import { revalidatePath } from "next/cache";
 import mongoose from "mongoose";
 import { getSession } from "@/utility/utility";
 
-interface IStudent {
-  _id: string;
-  name: string;
-}
-
 const studentAttendanceSchema = z.object({
   _id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id)),
   name: z.string(),
