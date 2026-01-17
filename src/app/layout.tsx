@@ -8,6 +8,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import ContextProvide from "@/context/AppContext";
 import Popup from "@/components/Popup";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             <Popup />
           </ContextProvide>
         </Provider>
+        <SpeedInsights />
       </body>
     </html>
   );
