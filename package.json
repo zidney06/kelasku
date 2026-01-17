@@ -6,7 +6,7 @@
     "dev": "next dev",
     "dev:test": "cross-env NODE_MYENV=test next dev",
     "build": "next build",
-    "start": "cross-env NODE_MYENV=test next start",
+    "start": "next start",
     "lint": "eslint",
     "test": "jest"
   },
