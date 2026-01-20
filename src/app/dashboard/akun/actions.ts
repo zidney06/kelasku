@@ -14,7 +14,7 @@ export const getUserData = async () => {
   await connectDB();
 
   const user = await User.findOne({ email: session.data.user?.email })
-    .select("name email tier")
+    .select("name email tier image")
     .lean();
 
   if (!user) {

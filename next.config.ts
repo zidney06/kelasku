@@ -20,6 +20,20 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // Domain untuk foto profil Google
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

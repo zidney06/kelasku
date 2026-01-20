@@ -1,17 +1,24 @@
 import Link from "next/link";
 import { getUserData } from "./actions";
 import z from "zod";
+import Image from "next/image";
 
 const userSchema = z.object({
   name: z.string(),
   email: z.email(),
   tier: z.string(),
+  image: z.string(),
 });
 
 export default async function AkunPage() {
   const res = await getUserData();
   let error: string = "";
-  let user: z.infer<typeof userSchema> = { name: "", email: "", tier: "" };
+  let user: z.infer<typeof userSchema> = {
+    name: "",
+    email: "",
+    tier: "",
+    image: "",
+  };
 
   const parsedData = userSchema.safeParse(res.data);
 
@@ -35,14 +42,20 @@ export default async function AkunPage() {
           <i className="bi bi-arrow-return-left"></i>
         </Link>
         <div className="row my-2">
-          <div className="col-md-6">
-            <h3>Informasi Akun</h3>
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">Detail Akun</h5>
-                <p className="card-text">Nama: {user.name}</p>
-                <p className="card-text">Email: {user.email}</p>
-                <p className="card-text">Tier: {user.tier}</p>
+          <div className="">
+            <div className="border p-2 rounded d-flex justify-content-center">
+              <div className="align-center text-center">
+                <h5 className="">Detail Akun</h5>
+                <Image
+                  src={user.image}
+                  className="rounded-circle mb-2"
+                  alt="Profile Image"
+                  width={100}
+                  height={100}
+                />
+                <p className="">Nama: {user.name}</p>
+                <p className="">Email: {user.email}</p>
+                <p className="">Tier: {user.tier}</p>
               </div>
             </div>
           </div>
