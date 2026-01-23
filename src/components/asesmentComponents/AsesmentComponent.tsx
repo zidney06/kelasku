@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { confirmAlert } from "react-confirm-alert";
 import CreateAsesmentComponent from "./CreateAsesmentComponent";
 import { createAsesment } from "@/actions/asesmentAct/actions";
@@ -21,6 +21,7 @@ export default function AsesmentComponent({
   const asesmentNameRef = useRef<HTMLInputElement>(null);
   const asesmenDescriptionRef = useRef<HTMLTextAreaElement>(null);
   const [students, setStudents] = useState<IStudent[]>(stds);
+  const [isLoading, startTransition] = useTransition();
 
   const fetchInputNilai = () => {
     if (!asesmentNameRef.current || !asesmenDescriptionRef.current) {
@@ -34,7 +35,9 @@ export default function AsesmentComponent({
       asesmentDescription: asesmenDescriptionRef.current.value,
     };
 
-    createAsesment(idKelas, requestData).then((res) => {
+    startTransition(async () => {
+      const res = await createAsesment(idKelas, requestData);
+
       if (!res.success) {
         console.error(res);
         confirmAlert({
@@ -172,8 +175,9 @@ export default function AsesmentComponent({
         <button
           className="btn btn-primary text-light my-2"
           onClick={handleKonfirmasi}
+          disabled={isLoading}
         >
-          Simpan
+          {isLoading ? "Memproses..." : "Simpan Nilai"}
         </button>
       </div>
     </>

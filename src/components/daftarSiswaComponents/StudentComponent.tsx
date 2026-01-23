@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteStudent } from "@/actions/studentListAct/actions";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useTransition } from "react";
 import { confirmAlert } from "react-confirm-alert";
 
 interface IStudent {
@@ -14,20 +14,31 @@ export default function StudentComponnent({
   setStudentId,
   setIsEdit,
   idKelas,
+  setStudentName,
 }: {
   student: IStudent;
+  setStudentName: Dispatch<SetStateAction<string>>;
   setStudentId: Dispatch<SetStateAction<string>>;
   setIsEdit: Dispatch<SetStateAction<boolean>>;
   idKelas: string;
 }) {
+  const handleEdit = () => {
+    setStudentName(student.name);
+    setStudentId(student._id.toString());
+    setIsEdit(true);
+  };
+  const [isLoading, startTransition] = useTransition();
+
   const handleDeleteStudent = () => {
-    deleteStudent(student._id, idKelas).then((res) => {
+    startTransition(async () => {
+      const res = await deleteStudent(student._id, idKelas);
+
       if (!res.success) {
         confirmAlert({
           customUI: ({ onClose }) => (
             <div className="border rounded p-3">
               <h3>Error!</h3>
-              <p>Gagal menghapus data siswa</p>
+              <p>{res.msg}</p>
               <button className="btn btn-primary" onClick={onClose}>
                 Oke
               </button>
@@ -36,25 +47,6 @@ export default function StudentComponnent({
         });
       }
     });
-    // axios
-    //   .delete(`/api/student/${params.idKelas}/${studentId}`)
-    //   .then(() => {
-    //     setStudents(students.filter((student) => student._id !== studentId));
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     confirmAlert({
-    //       customUI: ({ onClose }) => (
-    //         <div className="border rounded p-3">
-    //           <h3>Error!</h3>
-    //           <p>Gagal menghapus data siswa!</p>
-    //           <button className="btn btn-primary" onClick={onClose}>
-    //             Oke
-    //           </button>
-    //         </div>
-    //       ),
-    //     });
-    //   });
   };
 
   const handleDelete = () => {
@@ -82,6 +74,19 @@ export default function StudentComponnent({
     });
   };
 
+  if (isLoading) {
+    return (
+      <li
+        key={student._id}
+        className="list-group-item d-flex justify-content-center align-items-center p-2"
+      >
+        <p className="m-0">
+          <strong>Sedang menghapus siswa ini...</strong>
+        </p>
+      </li>
+    );
+  }
+
   return (
     <li
       key={student._id}
@@ -89,15 +94,7 @@ export default function StudentComponnent({
     >
       <p className="mb-0">{student.name}</p>
       <div style={{ width: 100 }} className="d-flex justify-content-between">
-        <button
-          className="btn btn-info text-light"
-          data-bs-target="#siswa"
-          data-bs-toggle="modal"
-          onClick={() => {
-            setStudentId(student._id.toString());
-            setIsEdit(true);
-          }}
-        >
+        <button className="btn btn-info text-light" onClick={handleEdit}>
           <i className="bi bi-pencil"></i>
         </button>
         <button className="btn btn-danger" onClick={() => handleDelete()}>

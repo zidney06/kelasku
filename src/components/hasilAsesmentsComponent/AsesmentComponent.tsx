@@ -2,6 +2,7 @@
 
 import { deleteAsesment } from "@/actions/hasilAsesmentAct/actions";
 import Link from "next/link";
+import { useTransition } from "react";
 import { confirmAlert } from "react-confirm-alert";
 
 interface Asesment {
@@ -21,8 +22,12 @@ export default function AsesmentComponent({
   i: number;
   idKelas: string;
 }) {
+  const [isLoading, startTransition] = useTransition();
+
   const fetchDeleteAsesment = () => {
-    deleteAsesment(idKelas, asesment._id).then((res) => {
+    startTransition(async () => {
+      const res = await deleteAsesment(idKelas, asesment._id);
+
       if (!res.success) {
         console.error(res.msg);
         confirmAlert({
@@ -77,15 +82,21 @@ export default function AsesmentComponent({
       <td>{asesment.description}</td>
       <td className="p-0">
         <div className="d-md-flex justify-content-around mx-auto">
-          <Link
-            href={`/dashboard/hasil-asesmen/${idKelas}/asesmen/${asesment._id}`}
-            className="btn btn-primary"
-          >
-            <i className="bi bi-box-arrow-right"></i>
-          </Link>
-          <button className="btn btn-danger" onClick={() => handleDelete()}>
-            <i className="bi bi-trash3"></i>
-          </button>
+          {isLoading ? (
+            <p className="text-center m-0">Sedang menghapus...</p>
+          ) : (
+            <>
+              <Link
+                href={`/dashboard/hasil-asesmen/${idKelas}/asesmen/${asesment._id}`}
+                className="btn btn-primary"
+              >
+                <i className="bi bi-box-arrow-right"></i>
+              </Link>
+              <button className="btn btn-danger" onClick={() => handleDelete()}>
+                <i className="bi bi-trash3"></i>
+              </button>
+            </>
+          )}
         </div>
       </td>
     </tr>

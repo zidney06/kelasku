@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { z } from "zod";
 import DeleteComponent from "@/components/dashboardComponents/DeleteComponent";
+import { deleteClass } from "@/actions/dasboardAct/actions";
+import { PopupContext } from "@/context/AppContext";
+import { useContext, useTransition } from "react";
 
 const classSchema = z.object({
   _id: z.preprocess((val) => String(val), z.string()),
@@ -19,6 +22,49 @@ export default function ClassCard({
   item: z.infer<typeof classSchema>;
   i: number;
 }) {
+  const context = useContext(PopupContext);
+  const [isLoading, startTransition] = useTransition();
+
+  const tes = true;
+
+  const handleDelete = (
+    inputValue: string,
+    className: string,
+    classId: string
+  ) => {
+    if (inputValue !== className) {
+      context?.setPopupState({
+        isShow: true,
+        title: "OOps!",
+        message: "Input tidak cocok!.",
+      });
+      return;
+    }
+
+    startTransition(async () => {
+      const res = await deleteClass(classId);
+
+      if (!res.success) {
+        context?.setPopupState({
+          isShow: true,
+          title: "Gagal!",
+          message: "Gagal menghapus kelas. silakan coba lagi nanti.",
+        });
+      }
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="card my-1 p-3" style={{ minWidth: 300 }} key={i}>
+        <div className="d-flex align-items-center">
+          <strong role="status">Sedang menghapus kelas ini...</strong>
+          <div className="spinner-border ms-auto" aria-hidden="true"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card my-1" style={{ minWidth: 300 }} key={i}>
       <div className="card-body">
@@ -81,7 +127,11 @@ export default function ClassCard({
             </ul>
           </div>
 
-          <DeleteComponent classId={item._id} className={item.className} />
+          <DeleteComponent
+            classId={item._id}
+            className={item.className}
+            handleDelete={handleDelete}
+          />
         </div>
       </div>
     </div>

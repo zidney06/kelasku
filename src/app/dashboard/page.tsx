@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { z } from "zod";
-import AddClassModal from "@/components/dashboardComponents/AddClassModal";
+import AddClassComponent from "@/components/dashboardComponents/AddClassComponent";
 import { getClassList } from "@/actions/dasboardAct/actions";
 import ClassCard from "@/components/dashboardComponents/ClassCard";
 
@@ -46,9 +46,9 @@ export default async function DashboardPage() {
       <main className="p-2">
         <p>Halo {username}, selamat Datang</p>
 
-        <AddClassModal />
+        <AddClassComponent />
 
-        <h2 className="mb-4">Daftar kelas</h2>
+        <h2 className="my-3">Daftar kelas</h2>
 
         <div className="row gx-2 p-2">
           {classList.length > 0 ? (

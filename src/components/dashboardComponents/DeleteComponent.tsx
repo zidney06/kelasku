@@ -1,41 +1,22 @@
 "use client";
 
 import { confirmAlert } from "react-confirm-alert";
-import DeleteClassModal from "./DeleteClassModal";
-import { useContext, useRef } from "react";
-import { PopupContext } from "@/context/AppContext";
-import { deleteClass } from "@/actions/dasboardAct/actions";
+import { useRef } from "react";
 
 export default function DeleteComponent({
   classId,
   className,
+  handleDelete,
 }: {
   classId: string;
   className: string;
+  handleDelete: (
+    inputValue: string,
+    className: string,
+    classId: string
+  ) => void;
 }) {
   const classNameRef = useRef<HTMLInputElement>(null);
-  const context = useContext(PopupContext);
-
-  const handleDelete = () => {
-    if (classNameRef.current?.value !== className) {
-      context?.setPopupState({
-        isShow: true,
-        title: "OOps!",
-        message: "Input tidak cocok!.",
-      });
-      return;
-    }
-    deleteClass(classId).then((res) => {
-      if (!res.success) {
-        context?.setPopupState({
-          isShow: true,
-          title: "Gagal!",
-          message: "Gagal menghapus kelas. silakan coba lagi nanti.",
-        });
-      }
-      console.log(res);
-    });
-  };
 
   const handleBtnClick = () => {
     confirmAlert({
@@ -60,7 +41,7 @@ export default function DeleteComponent({
             <button
               className="btn btn-primary"
               onClick={() => {
-                handleDelete();
+                handleDelete(classNameRef.current!.value, className, classId);
                 onClose();
               }}
             >
@@ -74,7 +55,6 @@ export default function DeleteComponent({
 
   return (
     <>
-      <DeleteClassModal classId={classId} className={className} />
       <button className="btn btn-danger" onClick={handleBtnClick}>
         <i className="bi bi-trash3"></i>
       </button>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import StudentComponnent from "@/components/daftarSiswaComponents/StudentComponent";
-import StudentModal from "@/components/daftarSiswaComponents/StudentModal";
+import CreateStudentComponent from "@/components/daftarSiswaComponents/CreateStudentComponent";
 
 interface IStudent {
   _id: string;
@@ -18,20 +18,15 @@ export default function Container({
 }) {
   const [studentId, setStudentId] = useState("");
   const [isEdit, setIsEdit] = useState(false);
+  const [studentName, setStudentName] = useState("");
 
   return (
     <>
-      <h5 className="m-0">
-        Tambah Siswa
-        <i
-          className="bi bi-plus-lg btn btn-outline-dark mx-1"
-          data-bs-toggle="modal"
-          data-bs-target="#siswa"
-        ></i>
-      </h5>
-      <StudentModal
+      <CreateStudentComponent
         studentId={studentId}
         isEdit={isEdit}
+        studentName={studentName}
+        setStudentName={setStudentName}
         setIsEdit={setIsEdit}
         idKelas={idKelas}
       />
@@ -42,6 +37,7 @@ export default function Container({
           students.map((std: IStudent) => (
             <StudentComponnent
               student={std}
+              setStudentName={setStudentName}
               setIsEdit={setIsEdit}
               idKelas={idKelas}
               setStudentId={setStudentId} // ini buat pas editSiswa

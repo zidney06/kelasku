@@ -1,7 +1,7 @@
 "use client";
 
 import { setStudentsAttendance } from "@/actions/presenceAct/actions";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { confirmAlert } from "react-confirm-alert";
 
 interface IStudent {
@@ -23,6 +23,7 @@ interface Props {
 
 export default function PresenceComponent({ stds, idKelas }: Props) {
   const [students, setStudents] = useState<IStudent[]>(stds);
+  const [isLoading, startTransition] = useTransition();
 
   const handleHadirSemua = () => {
     const updatedStudents = students.map((siswa) => ({
@@ -56,7 +57,9 @@ export default function PresenceComponent({ stds, idKelas }: Props) {
       return;
     }
 
-    setStudentsAttendance(idKelas, students).then((res) => {
+    startTransition(async () => {
+      const res = await setStudentsAttendance(idKelas, students);
+
       if (!res.success) {
         confirmAlert({
           customUI: ({ onClose }) => (
@@ -141,8 +144,9 @@ export default function PresenceComponent({ stds, idKelas }: Props) {
         <button
           className="btn btn-primary text-light my-2"
           onClick={handleKonfirmasi}
+          disabled={isLoading}
         >
-          Konfirmasi
+          {isLoading ? "Menyimpan..." : "Simpan Presensi"}
         </button>
       </div>
     </div>

@@ -78,6 +78,7 @@ export const addStudentToClass = async (
     const stdName = z
       .string()
       .min(1)
+      .max(150)
       .regex(/^[a-zA-Z\s]+$/)
       .safeParse(studentName);
     const clsId = mongooseIdSchema.safeParse(classId); // cek apakah id kelas valid
@@ -150,6 +151,7 @@ export const editStudent = async (
     const stdName = z
       .string()
       .min(1)
+      .max(150)
       .regex(/^[a-zA-Z\s]+$/)
       .safeParse(studentName);
     const clsId = mongooseIdSchema.safeParse(classId);
