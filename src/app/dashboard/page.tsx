@@ -1,3 +1,6 @@
+// ini digunakan untuk menghindari error dynamic server usage
+// karena penggunaan getServerSession actions.ts
+// + agar data user A tidak ke-cache dan ditampilkan ke user B
 export const dynamic = "force-dynamic";
 
 import { z } from "zod";

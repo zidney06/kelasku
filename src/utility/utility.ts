@@ -16,14 +16,14 @@ export const getSession = async () => {
   const session = await getServerSession(nextOptions);
 
   if (!session) {
-    return { success: false, msg: "Cookie required" };
+    return { success: false, msg: "Unauthorized" };
   }
 
   const parsedSession = sessionSchema.safeParse(session);
 
   if (parsedSession.success === false) {
     console.error(parsedSession.error);
-    return { success: false, msg: "Unauthorized" };
+    return { success: false, msg: "Validation failed" };
   }
   return { data: parsedSession.data, success: true };
 };

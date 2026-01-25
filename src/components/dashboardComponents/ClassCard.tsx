@@ -25,8 +25,6 @@ export default function ClassCard({
   const context = useContext(PopupContext);
   const [isLoading, startTransition] = useTransition();
 
-  const tes = true;
-
   const handleDelete = (
     inputValue: string,
     className: string,
