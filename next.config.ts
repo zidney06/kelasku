@@ -2,10 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental: {
-    reactCompiler: true,
-  },
-  webpack: (config, { isServer }) => {
+  // experimental: {
+  //   reactCompiler: true,
+  // },
+  webpack: (config: any, isServer: any) => {
     if (isServer) {
       // Pastikan fallback berada di dalam resolve
       config.resolve.fallback = {

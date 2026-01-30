@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getUserData } from "./actions";
+import { getUserData } from "../../../actions/akunAct/actions";
 import z from "zod";
 import Image from "next/image";
 
