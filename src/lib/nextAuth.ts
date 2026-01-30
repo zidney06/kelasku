@@ -15,6 +15,13 @@ export const nextOptions = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          // memaksa google untuk menampilkan polihan akun
+          // jika tidak maka google akan otomatis memilih akun yang sedang login di browser
+          prompt: "select_account",
+        },
+      },
     }),
   ],
   callbacks: {
