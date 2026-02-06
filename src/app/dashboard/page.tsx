@@ -48,7 +48,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="container-fluid p-0">
-      <Container username={username} classList={classList} remainingDays={4} />
+      <Container
+        username={username}
+        classList={classList}
+        remainingDays={remainingDays}
+      />
     </div>
   );
 }
