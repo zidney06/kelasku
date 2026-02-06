@@ -13,7 +13,6 @@
 # testing
 /coverage
 /src/utility/test-utility
-/src/lib/seed.ts
 
 # next.js
 /.next/

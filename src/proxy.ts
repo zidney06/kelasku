@@ -4,12 +4,6 @@ import { getToken } from "next-auth/jwt";
 import User from "./models/user";
 import { getRemainingDays } from "./utility/utility";
 
-// export default withAuth({
-//   pages: {
-//     signIn: "/auth/signin", // sesuaikan dengan halaman loginmu
-//   },
-// });
-
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   await connectDB();
