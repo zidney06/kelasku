@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, ReactNode, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 
 interface stateType {
   title: string;
@@ -8,12 +14,14 @@ interface stateType {
   isShow: boolean;
 }
 
-interface PopupContextType {
+interface AppContextType {
   state: stateType;
   setPopupState: (newState: stateType) => void;
+  isShowed: boolean;
+  setIsShowed: Dispatch<SetStateAction<boolean>>;
 }
 
-export const PopupContext = createContext<PopupContextType | null>(null);
+export const AppContext = createContext<AppContextType | null>(null);
 
 export default function ContextProvide({ children }: { children: ReactNode }) {
   const [state, setState] = useState({
@@ -21,14 +29,17 @@ export default function ContextProvide({ children }: { children: ReactNode }) {
     message: "",
     isShow: false,
   });
+  const [isShowed, setIsShowed] = useState(false);
 
   const setPopupState = (newState: stateType) => {
     setState(newState);
   };
 
   return (
-    <PopupContext.Provider value={{ state, setPopupState }}>
+    <AppContext.Provider
+      value={{ state, setPopupState, isShowed, setIsShowed }}
+    >
       {children}
-    </PopupContext.Provider>
+    </AppContext.Provider>
   );
 }

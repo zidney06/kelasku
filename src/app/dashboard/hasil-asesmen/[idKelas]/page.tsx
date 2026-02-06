@@ -10,7 +10,7 @@ const asesmentSchema = z.object({
   date: z.date(),
   description: z.string(),
   asesmentResults: z.array(
-    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id))
+    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id)),
   ),
 });
 
@@ -40,14 +40,21 @@ export default async function HasilPresensiPage({
     }
   }
 
+  if (error) {
+    return (
+      <div className="container-fluid p-0">
+        <h5 className="text-center mt-5">Terjadi kesalahan</h5>
+        <p className="text-center">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container-fluid p-0">
       <main className="p-1">
         <Link href="/dashboard" className="btn btn-info text-light">
           <i className="bi bi-arrow-return-left"></i>
         </Link>
-
-        <h5></h5>
 
         <h5>Pilih Asesmen</h5>
 

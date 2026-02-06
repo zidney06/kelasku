@@ -6,6 +6,8 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     image: { type: String }, // Foto profil dari Google
     tier: { type: String, enum: ["free", "subscription"], default: "free" },
+    lastOrderId: { type: String },
+    expiryDate: { type: Date },
   },
   { timestamps: true },
 );

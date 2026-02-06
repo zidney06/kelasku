@@ -52,6 +52,15 @@ export default async function HasilPresensiPage({
     }
   }
 
+  if (error) {
+    return (
+      <div className="container-fluid p-0">
+        <h5 className="text-center mt-5">Terjadi kesalahan</h5>
+        <p className="text-center">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-2">
       <Link href="/dashboard" className="btn btn-info text-light mb-2">

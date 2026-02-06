@@ -1,10 +1,10 @@
 "use client";
 
-import { PopupContext } from "@/context/AppContext";
+import { AppContext } from "@/context/AppContext";
 import { useContext } from "react";
 
 export default function Popup() {
-  const context = useContext(PopupContext);
+  const context = useContext(AppContext);
 
   const close = () => {
     context?.setPopupState({

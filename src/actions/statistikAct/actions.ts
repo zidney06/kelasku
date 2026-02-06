@@ -2,7 +2,7 @@
 
 import connectDB from "@/lib/connectDb";
 import Class from "@/models/class";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import { z } from "zod";
 import mongoose from "mongoose";
 import { getSession } from "@/utility/utility";

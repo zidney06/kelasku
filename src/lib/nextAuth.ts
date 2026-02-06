@@ -1,14 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import connectDB from "@/lib/connectDb";
-import User from "@/models/googleAuth";
-
-interface IUser {
-  _id: string;
-  name: string;
-  email: string;
-  image: string;
-}
+import User from "@/models/user";
 
 export const nextOptions = NextAuth({
   providers: [
@@ -42,7 +35,7 @@ export const nextOptions = NextAuth({
 
           return true;
         } catch (error) {
-          console.error("Gagal proses auto-register:", error);
+          console.error("Gagal proses register:", error);
           return false;
         }
       }
@@ -50,10 +43,13 @@ export const nextOptions = NextAuth({
     },
     async session({ session }) {
       await connectDB();
+
       const user = await User.findOne({ email: session.user?.email });
-      if (user && session.user) {
-        (session.user as IUser)._id = user._id.toString();
+
+      if (!user) {
+        throw new Error("User not found");
       }
+
       return session;
     },
   },

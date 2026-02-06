@@ -3,7 +3,7 @@
 import connectDB from "@/lib/connectDb";
 import Class from "@/models/class";
 import Asesmen from "@/models/asesmen";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import Student from "@/models/student";
 import AsesmentResult from "@/models/asesmentResult";
 import { getSession } from "@/utility/utility";
@@ -17,7 +17,7 @@ const asesmentSchema = z.object({
   date: z.date(),
   description: z.string(),
   asesmentResults: z.array(
-    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id))
+    z.string().refine((id) => mongoose.Types.ObjectId.isValid(id)),
   ),
 });
 
@@ -94,10 +94,10 @@ export const getAsesmentsList = async (classId: string) => {
           ...asesment,
           _id: asesment._id.toString(),
           asesmentResults: asesment.asesmentResults.map((item) =>
-            item.toString()
+            item.toString(),
           ),
         };
-      }
+      },
     );
 
     return {
@@ -113,7 +113,7 @@ export const getAsesmentsList = async (classId: string) => {
 
 export const getAsesmentResults = async (
   classId: string,
-  asesmentId: string
+  asesmentId: string,
 ) => {
   try {
     const session = await getSession();

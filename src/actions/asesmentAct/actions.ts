@@ -5,7 +5,7 @@ import Class from "@/models/class";
 import AsesmentResult from "@/models/asesmentResult";
 import Asesmen from "@/models/asesmen";
 import Student from "@/models/student";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import { z } from "zod";
 import mongoose from "mongoose";
 import { getSession } from "@/utility/utility";
@@ -103,7 +103,7 @@ const requestSchema = z.object({
 
 export const createAsesment = async (
   classId: string,
-  requestData: z.infer<typeof requestSchema>
+  requestData: z.infer<typeof requestSchema>,
 ) => {
   try {
     const session = await getSession();
@@ -162,7 +162,7 @@ export const createAsesment = async (
           studentData: result._id,
           score: result.score,
         });
-      }
+      },
     );
 
     const newAsesment = new Asesmen({
@@ -172,7 +172,7 @@ export const createAsesment = async (
       }),
       description: req.data.asesmentDescription.trim(),
       asesmentResults: asesmentResults.map(
-        (result: z.infer<typeof resultSchema>) => result._id
+        (result: z.infer<typeof resultSchema>) => result._id,
       ),
     });
 
@@ -201,7 +201,7 @@ export const createAsesment = async (
             ],
           },
         };
-      }
+      },
     );
 
     // simpan asesmen dan hasil asesmen

@@ -27,3 +27,18 @@ export const getSession = async () => {
   }
   return { data: parsedSession.data, success: true };
 };
+
+export const getRemainingDays = (expiryDate: Date) => {
+  if (!expiryDate) return 0;
+
+  const now: any = new Date();
+  const expiry: any = new Date(expiryDate);
+
+  // Hitung selisih dalam milidetik
+  const diffInMs = expiry - now;
+
+  // Konversi ke hari (pembulatan ke atas)
+  const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
+  return diffInDays;
+};

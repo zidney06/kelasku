@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import connectDB from "@/lib/connectDb";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import Class from "@/models/class";
 import Asesmen from "@/models/asesmen";
 import AsesmentResult from "@/models/asesmentResult";
 import Student from "@/models/student";
 import mongoose from "mongoose";
-import { getSession } from "@/utility/utility";
+import { getSession, getRemainingDays } from "@/utility/utility";
 
 const classSchema = z.object({
   className: z
@@ -23,13 +23,7 @@ const classSchema = z.object({
   semester: z.string().regex(/^[1-9]+$/),
 });
 
-const userSchema = z.object({
-  email: z.email(),
-  name: z.string(),
-  image: z.string(),
-});
-
-export const getClassList = async () => {
+export const getDashboardData = async () => {
   try {
     const session = await getSession();
 
@@ -42,7 +36,7 @@ export const getClassList = async () => {
     const user = await User.findOne({
       email: session.data.user.email,
     })
-      .select("name")
+      .select("name tier expiryDate")
       .lean();
 
     if (!user) {
@@ -62,12 +56,19 @@ export const getClassList = async () => {
       };
     });
 
+    // cek informasi masa langgaan
+    let remainingDays = 0;
+    if (user.tier === "subscription") {
+      remainingDays = getRemainingDays(user.expiryDate);
+    }
+
     return {
       success: true,
       msg: "Class list fetched successfully!",
       data: {
         classList,
         username: user.name,
+        remainingDays,
       },
     };
   } catch (error) {
@@ -204,15 +205,15 @@ export const deleteClass = async (classId: string) => {
       await mongooseSession.withTransaction(async () => {
         await AsesmentResult.deleteMany(
           { _id: { $in: idAsesmentresults } },
-          { mongooseSession }
+          { mongooseSession },
         );
         await Asesmen.deleteMany(
           { _id: { $in: cls.asesments } },
-          { mongooseSession }
+          { mongooseSession },
         );
         await Student.deleteMany(
           { _id: { $in: cls.students } },
-          { mongooseSession }
+          { mongooseSession },
         );
         await Class.deleteOne({ _id: cls._id }, { mongooseSession });
       });

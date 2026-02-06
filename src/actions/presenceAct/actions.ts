@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import connectDB from "@/lib/connectDb";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import Class from "@/models/class";
 import Student from "@/models/student";
 import { revalidatePath } from "next/cache";
@@ -79,7 +79,7 @@ export const getStudentsByClassId = async (classId: string) => {
           name: std.name,
           attendanceStatus: 0,
         };
-      }
+      },
     );
 
     const today = new Date().toLocaleDateString("en-CA", {
@@ -112,7 +112,7 @@ export const getStudentsByClassId = async (classId: string) => {
 
 export const setStudentsAttendance = async (
   classId: string,
-  studentAttendanceData: z.infer<typeof stdsAtdDataSchema>
+  studentAttendanceData: z.infer<typeof stdsAtdDataSchema>,
 ) => {
   try {
     const session = await getSession();
@@ -122,7 +122,7 @@ export const setStudentsAttendance = async (
     }
 
     const parsedStudentAtdData = stdsAtdDataSchema.safeParse(
-      studentAttendanceData
+      studentAttendanceData,
     );
     const clsId = mongooseIdSchema.safeParse(classId); // cek apakah id kelas valid
 
@@ -155,7 +155,7 @@ export const setStudentsAttendance = async (
     }
 
     const cls = await Class.findById(clsId.data).select(
-      "owner attendanceHistory students"
+      "owner attendanceHistory students",
     );
 
     // cek apakah kelas ada
@@ -197,7 +197,7 @@ export const setStudentsAttendance = async (
             },
           },
         },
-      })
+      }),
     );
 
     await Promise.all([cls.save(), Student.bulkWrite(operations)]);

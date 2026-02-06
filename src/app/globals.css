@@ -3,50 +3,28 @@
 }
 
 .react-confirm-alert-overlay {
-  z-index: 9999 !important;
+    z-index: 9999 !important;
 }
 
 .pop-up-container {
-	background-color: rgba(0, 0, 0, 0.2);
-	width: 100vw;
-	height: 100vh;
-	z-index: 1;
-	bottom: 0;
-	position: fixed;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    bottom: 0;
+    position: fixed;
 }
 .pop-up-box {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 300px;
-	background-color: white;
-	z-index: 2;
-	border-radius: 10px;
-	padding: 1rem;
-}
-
-/*.custom-ui {
-    background-color: black;
-}
-
-.custom-ui h1 {
-    color: white;
-    font-size: 2rem;
-}
-
-.custom-ui p {
-    color: white;
-}
-
-.custom-ui button {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
     background-color: white;
-    color: black;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-}*/
+    z-index: 2;
+    border-radius: 10px;
+    padding: 1rem;
+}
 
 .pop-up-container {
     background-color: rgba(0, 0, 0, 0.2);
@@ -65,21 +43,23 @@
 }
 
 .loading-dots::after {
-  content: ' .';
-  animation: dots 1.5s steps(5, end) infinite;
+    content: " .";
+    animation: dots 1.5s steps(5, end) infinite;
 }
 
 @keyframes dots {
-  0%, 20% {
-    content: ' .';
-  }
-  40% {
-    content: ' ..';
-  }
-  60% {
-    content: ' ...';
-  }
-  80%, 100% {
-    content: '';
-  }
+    0%,
+    20% {
+        content: " .";
+    }
+    40% {
+        content: " ..";
+    }
+    60% {
+        content: " ...";
+    }
+    80%,
+    100% {
+        content: "";
+    }
 }

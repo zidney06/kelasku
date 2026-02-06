@@ -4,7 +4,7 @@ import Link from "next/link";
 import { z } from "zod";
 import DeleteComponent from "@/components/dashboardComponents/DeleteComponent";
 import { deleteClass } from "@/actions/dasboardAct/actions";
-import { PopupContext } from "@/context/AppContext";
+import { AppContext } from "@/context/AppContext";
 import { useContext, useTransition } from "react";
 
 const classSchema = z.object({
@@ -22,13 +22,13 @@ export default function ClassCard({
   item: z.infer<typeof classSchema>;
   i: number;
 }) {
-  const context = useContext(PopupContext);
+  const context = useContext(AppContext);
   const [isLoading, startTransition] = useTransition();
 
   const handleDelete = (
     inputValue: string,
     className: string,
-    classId: string
+    classId: string,
   ) => {
     if (inputValue !== className) {
       context?.setPopupState({

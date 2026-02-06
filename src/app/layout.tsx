@@ -9,6 +9,8 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import ContextProvide from "@/context/AppContext";
 import Popup from "@/components/Popup";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ToastContainer } from "react-toastify";
+import { Bounce } from "react-toastify";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 
@@ -32,6 +34,19 @@ export default function RootLayout({
           <AddBootstrap />
           <ContextProvide>
             {children}
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Bounce}
+            />
             <Popup />
           </ContextProvide>
         </Provider>

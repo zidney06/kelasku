@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import connectDB from "@/lib/connectDb";
-import User from "@/models/googleAuth";
+import User from "@/models/user";
 import Class from "@/models/class";
 import Student from "@/models/student";
 import { revalidatePath } from "next/cache";
@@ -72,7 +72,7 @@ export const getStudentsByClassId = async (classId: string) => {
 
 export const addStudentToClass = async (
   classId: string,
-  studentName: string
+  studentName: string,
 ) => {
   try {
     const stdName = z
@@ -144,7 +144,7 @@ export const addStudentToClass = async (
 export const editStudent = async (
   studentName: string,
   studentId: string,
-  classId: string
+  classId: string,
 ) => {
   try {
     // validasi input user
@@ -194,7 +194,7 @@ export const editStudent = async (
     const updatedStudent = await Student.findByIdAndUpdate(
       stdId.data,
       { name: stdName.data },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedStudent) {
@@ -263,7 +263,7 @@ export const deleteStudent = async (studentId: string, classId: string) => {
     const deletedStudent = await Student.findByIdAndUpdate(
       stdId.data,
       { $set: { isDeleted: true } },
-      { new: true }
+      { new: true },
     );
 
     if (!deletedStudent) {

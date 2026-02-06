@@ -1,13 +1,17 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { getUserData } from "../../../actions/akunAct/actions";
 import z from "zod";
 import Image from "next/image";
+import SubscriptionComponent from "@/components/akunComponents/SubscriptionComponent";
 
 const userSchema = z.object({
   name: z.string(),
   email: z.email(),
   tier: z.string(),
   image: z.string(),
+  lastOrderId: z.string().optional(),
 });
 
 export default async function AkunPage() {
@@ -20,8 +24,6 @@ export default async function AkunPage() {
     image: "",
   };
 
-  const parsedData = userSchema.safeParse(res.data);
-
   if (!res.success) {
     error = "Gagal mengambil data user";
   } else {
@@ -33,6 +35,21 @@ export default async function AkunPage() {
     } else {
       user = parsedData.data;
     }
+  }
+
+  if (error) {
+    return (
+      <div className="container-fluid p-2">
+        <main className="">
+          <Link href="/dashboard" className="btn btn-info text-light">
+            <i className="bi bi-arrow-return-left"></i>
+          </Link>
+          <div className="row my-2">
+            <p>{error}</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -56,6 +73,7 @@ export default async function AkunPage() {
                 <p className="">Nama: {user.name}</p>
                 <p className="">Email: {user.email}</p>
                 <p className="">Tier: {user.tier}</p>
+                <SubscriptionComponent />
               </div>
             </div>
           </div>

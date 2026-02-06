@@ -4,9 +4,8 @@
 export const dynamic = "force-dynamic";
 
 import { z } from "zod";
-import AddClassComponent from "@/components/dashboardComponents/AddClassComponent";
-import { getClassList } from "@/actions/dasboardAct/actions";
-import ClassCard from "@/components/dashboardComponents/ClassCard";
+import { getDashboardData } from "@/actions/dasboardAct/actions";
+import Container from "@/components/dashboardComponents/Container";
 
 const classSchema = z.object({
   _id: z.preprocess((val) => String(val), z.string()),
@@ -19,6 +18,7 @@ const classSchema = z.object({
 const dataSchema = z.object({
   classList: z.array(classSchema),
   username: z.string(),
+  remainingDays: z.number(),
 });
 
 const getClassResSchema = z.object({
@@ -30,8 +30,9 @@ const getClassResSchema = z.object({
 export default async function DashboardPage() {
   const classList = [] as z.infer<typeof classSchema>[];
   let username = "";
+  let remainingDays = 0;
 
-  const res = await getClassList();
+  const res = await getDashboardData();
 
   const parsedRes = getClassResSchema.safeParse(res);
 
@@ -41,36 +42,13 @@ export default async function DashboardPage() {
     if (parsed.success) {
       classList.push(...parsed.data.classList);
       username = parsed.data.username;
+      remainingDays = parsed.data.remainingDays;
     }
   }
 
   return (
     <div className="container-fluid p-0">
-      <main className="p-2">
-        <p>Halo {username}, selamat Datang</p>
-
-        <AddClassComponent />
-
-        <h2 className="my-3">Daftar kelas</h2>
-
-        <div className="row gx-2 p-2">
-          {classList.length > 0 ? (
-            classList.map((item: z.infer<typeof classSchema>, i: number) => (
-              <ClassCard item={item} i={i} key={i} />
-            ))
-          ) : (
-            <div className="mx-auto">
-              <div className="card my-2 mx-sm-2">
-                <div className="card-body">
-                  <h5 className="card-title m-0 text-center">
-                    Belum ada kelas
-                  </h5>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </main>
+      <Container username={username} classList={classList} remainingDays={4} />
     </div>
   );
 }
